@@ -1,0 +1,15 @@
+{
+  "name": "backend-carrito-larussa",
+  "version": "1.0.0",
+  "description": "Back End de un carrito de compras",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jplarussa/backend-carrito-larussa.git"
+  },
+  "author": "Jean Pierre La Russa",
+  "license": "ISC"
+}
