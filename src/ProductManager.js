@@ -48,8 +48,12 @@ class ProductManager {
             stock
         );
 
-        productoNuevo.id = ProductManager.idcounter;
-        ProductManager.idcounter++;
+        let idExists = true;
+        while (idExists) {
+            productoNuevo.id = ProductManager.idcounter;
+            ProductManager.idcounter++;
+            idExists = this.products.some(product => product.id === productoNuevo.id);
+        }
 
         console.log("Creating Product:");
         console.log(productoNuevo);
@@ -159,9 +163,10 @@ class ProductManager {
     };
 }
 
-/* export default ProductManager; */
+export default ProductManager;
+
 /* 
- GENERADOR PRODUCTOS Y PRUEBAS DE CODIGO */
+GENERADOR PRODUCTOS Y PRUEBAS DE CODIGO 
 
 let productManager = new ProductManager();
 let persistirProducto = async () => {
@@ -170,23 +175,23 @@ let persistirProducto = async () => {
     await productManager.addProduct("Manzana", "Manzana Roja de la Rioja", 9, "/image1.jpg", "abc124", 10);
     await productManager.addProduct("Peras", "Peras que no desesperan", 15.99, "/image2.jpg", "abc125", 5);
     await productManager.addProduct("Cocos", "Cocos locos", 5.99, "/image29.jpg", "abc126", 5);
-    /*     await productManager.addProduct("Cocos2", "Cocos locos2", 17.99, "/image30.jpg", "abc127", 5);
-        await productManager.addProduct("Ciruela", "Ciruela dulce", 8.99, "/image31.jpg", "abc128", 15);
-        await productManager.addProduct("Naranja", "Naranja de jugo", 2.5, "/image32.jpg", "abc129", 25);
-        await productManager.addProduct("Sandia", "Sandia sabrosa", 10.99, "/image33.jpg", "abc130", 10);
-        await productManager.addProduct("Melon", "Melon rocio de miel", 8.12, "/image34.jpg", "abc131", 4);
-        await productManager.addProduct("Huevos", "Huevos x 12", 70, "/image35.jpg", "abc132", 500);
-        await productManager.addProduct("Lechuga", "Lechuga criolla", 14.1, "/image36.jpg", "abc133", 50); */
-    /*     let productos = await productManager.getProducts();
-        console.log(`Productos encontrados en Product Manager: ${productos.length}`);
-        console.log(productos);
-        console.log("Buscando por codigo");
-        console.log(productManager.getProductByCode("abc123"));
-        await productManager.updateProduct("abc125", {title: "Peras", description: "Peras que no desesperan", price: 19.99, thumbnail: "/image2.jpg", code: "abc125", stock: 4});
-        console.log(productos);
-        await productManager.deleteProduct("abc126");
-        console.log(productos);
-        await productManager.updateProduct("abc124", {title: "Manzana Verde"});
-        console.log(productos); */
+    await productManager.addProduct("Cocos2", "Cocos locos2", 17.99, "/image30.jpg", "abc127", 5);
+    await productManager.addProduct("Ciruela", "Ciruela dulce", 8.99, "/image31.jpg", "abc128", 15);
+    await productManager.addProduct("Naranja", "Naranja de jugo", 2.5, "/image32.jpg", "abc129", 25);
+    await productManager.addProduct("Sandia", "Sandia sabrosa", 10.99, "/image33.jpg", "abc130", 10);
+    await productManager.addProduct("Melon", "Melon rocio de miel", 8.12, "/image34.jpg", "abc131", 4);
+    await productManager.addProduct("Huevos", "Huevos x 12", 70, "/image35.jpg", "abc132", 500);
+    await productManager.addProduct("Lechuga", "Lechuga criolla", 14.1, "/image36.jpg", "abc133", 50);
+    let productos = await productManager.getProducts();
+    console.log(`Productos encontrados en Product Manager: ${productos.length}`);
+    console.log(productos);
+    console.log("Buscando por codigo");
+    console.log(productManager.getProductByCode("abc123"));
+    await productManager.updateProduct("abc125", {title: "Peras", description: "Peras que no desesperan", price: 19.99, thumbnail: "/image2.jpg", code: "abc125", stock: 4});
+    console.log(productos);
+    await productManager.deleteProduct("abc126");
+    console.log(productos);
+    await productManager.updateProduct("abc124", {title: "Manzana Verde"});
+    console.log(productos);
 };
-persistirProducto();
+persistirProducto();*/
