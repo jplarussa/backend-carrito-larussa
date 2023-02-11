@@ -33,7 +33,7 @@ app.get('/products/:pid', async (request, response) => {
     const product = await productos.find(x => x.id === parseInt(request.params.pid));
 
     if (product) {
-        response.send(product);
+        response.send(`<html><body><h1>Producto: ${request.params.pid}</h1><ul><li>${JSON.stringify(product)}</li></ul></body></html>`);
     } else {
         response.send({ message: "Product not found" });
     }
