@@ -15,13 +15,19 @@ class ProductManager {
 
             if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.thumbnail || !newProduct.code || !newProduct.stock || !newProduct.status || !newProduct.category) {
                 console.error("Hey! All fields are required");
-                return false;
+                return {
+                    success: false,
+                    message: "Hey! All fields are required"
+                };
             }
 
             this.products = await this.readProducts();
             if (this.products.some(p => p.code === newProduct.code)) {
                 console.error("Code id already exists");
-                return false;
+                return {
+                    success: false,
+                    message: "Code id already exists"
+                };
             }
 
             //Check for id repeated
@@ -37,7 +43,9 @@ class ProductManager {
             console.log(newProduct);
 
             await this.saveProducts();
-            return true;
+            return {
+                success: true
+            };
 
         } catch (error) {
             console.error(error.message);

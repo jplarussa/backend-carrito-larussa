@@ -52,10 +52,10 @@ router.post('/', async (request, response) => {
         let newProduct = request.body;
         let productCreated = await productManager.addProduct(newProduct);
 
-        if (productCreated) {            
+        if (productCreated.success) {            
             response.status(201).send({message: "Product created successfully! Product:" + newProduct.title});
         } else {
-            response.status(400).send({message: "Product already exists or not all fields have been completed."});
+            response.status(400).send({message: "Error: Product already exists or not all fields have been completed."});
         }
         
     } catch (error) {
@@ -71,7 +71,7 @@ router.put('/:pid', async (request, response) => {
 
         let productUpdated = await productManager.updateProduct(productId, productFields);
 
-        if (productUpdated) {            
+        if (productUpdated.success) {            
             response.status(201).send({message: "Product updated successfully! Product:" + productFields.title});
         } else {
             response.status(400).send({message: "Product with the provided id doesn't exist."});
@@ -89,7 +89,7 @@ router.delete('/:pid', async (request, response) => {
 
         let productDeleted = await productManager.deleteProduct(productId)
 
-        if (productDeleted) {            
+        if (productDeleted.success) {            
             response.status(201).send({message: "Product deleted successfully! Product ID:" + productId});
         } else {
             response.status(400).send({message: "Product with the provided id doesn't exist or something go wrong."});
