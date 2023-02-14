@@ -13,15 +13,15 @@ class ProductManager {
     async addProduct(newProduct) {
         try {
 
-            if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.thumbnail || !newProduct.code || !newProduct.stock) {
+            if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.thumbnail || !newProduct.code || !newProduct.stock || !newProduct.status || !newProduct.category) {
                 console.error("Hey! All fields are required");
-                return;
+                return false;
             }
 
             this.products = await this.readProducts();
             if (this.products.some(p => p.code === newProduct.code)) {
                 console.error("Code id already exists");
-                return;
+                return false;
             }
 
             //Check for id repeated
@@ -37,6 +37,7 @@ class ProductManager {
             console.log(newProduct);
 
             await this.saveProducts();
+            return true;
 
         } catch (error) {
             console.error(error.message);
@@ -79,7 +80,7 @@ class ProductManager {
             if (index === -1) {
                 return {
                     success: false,
-                    message: "Product with the provided code doesn't exist"
+                    message: "Product with the provided id doesn't exist"
                 };
             }
             this.products[index] = { ...this.products[index], ...product };
@@ -123,7 +124,6 @@ class ProductManager {
             await fs.promises.mkdir(directory, { recursive: true });
 
             const data = await fs.promises.readFile(this.filePath, 'utf8');
-
             return JSON.parse(data);
 
         } catch (error) {
@@ -148,136 +148,3 @@ class ProductManager {
 }
 
 export default ProductManager;
-/* 
-// TESTEO DE APP
-
-const manager = new ProductManager();
-
-const product1 = {
-    title: "Apple",
-    description: "A delicious red apple",
-    price: 0.5,
-    thumbnail: "https://www.example.com/apple.jpg",
-    code: "001",
-    stock: 100
-};
-
-const product2 = {
-    title: "Banana",
-    description: "A sweet yellow banana",
-    price: 0.3,
-    thumbnail: "https://www.example.com/banana.jpg",
-    code: "002",
-    stock: 150
-};
-
-const product3 = {
-    title: "Orange",
-    description: "A juicy orange fruit",
-    price: 0.4,
-    thumbnail: "https://www.example.com/orange.jpg",
-    code: "003",
-    stock: 75
-};
-
-const product4 = {
-    title: "Peach",
-    description: "A sweet and juicy peach",
-    price: 0.6,
-    thumbnail: "https://www.example.com/peach.jpg",
-    code: "004",
-    stock: 50
-};
-
-const product5 = {
-    title: "Kiwi",
-    description: "A fuzzy green kiwi",
-    price: 0.7,
-    thumbnail: "https://www.example.com/kiwi.jpg",
-    code: "005",
-    stock: 200
-};
-
-const product6 = {
-    title: "Pineapple",
-    description: "A sweet and juicy pineapple",
-    price: 1,
-    thumbnail: "https://www.example.com/pineapple.jpg",
-    code: "006",
-    stock: 75
-};
-
-const product7 = {
-    title: "Mango",
-    description: "A sweet and juicy mango",
-    price: 0.9,
-    thumbnail: "https://www.example.com/mango.jpg",
-    code: "007",
-    stock: 100
-};
-
-const product8 = {
-    title: "Cherry",
-    description: "A sweet and juicy cherry",
-    price: 0.2,
-    thumbnail: "https://www.example.com/cherry.jpg",
-    code: "008",
-    stock: 200
-};
-
-const product9 = {
-    title: "Strawberry",
-    description: "A sweet and juicy strawberry",
-    price: 0.5,
-    thumbnail: "https://www.example.com/strawberry.jpg",
-    code: "009",
-    stock: 150
-};
-
-const product10 = {
-    title: "Blueberry",
-    description: "A sweet and juicy blueberry",
-    price: 0.8,
-    thumbnail: "https://www.example.com/blueberry.jpg",
-    code: "010",
-    stock: 100
-};
-
-const updatedProduct10 = {
-    title: "Banana updated",
-    description: "Yellow sweet fruit, now with a different title",
-    price: 0.5,
-    thumbnail: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
-    code: "b10",
-    stock: 20
-};
-
-async function test() {
-    const pm = new ProductManager();
-
-    let group = [product1, product2, product3, product4, product5, product6, product7, product8, product9, product10];
-    for (let product of group) {
-        await pm.addProduct(product);
-    }
-
-
-    const products = await pm.getProducts();
-    console.log(products);
-
-    const productToGet = await pm.getProductById(9);
-    console.log(productToGet);
-
-    const updatedProduct = await pm.updateProduct(9, updatedProduct10);
-    console.log(updatedProduct);
-
-    const productsAfterUpdate = await pm.getProducts();
-    console.log(productsAfterUpdate);
-
-    const deletedProduct = await pm.deleteProduct(8);
-    console.log(deletedProduct);
-
-    const productsAfterDelete = await pm.getProducts();
-    console.log(productsAfterDelete);
-}
-
-test(); */

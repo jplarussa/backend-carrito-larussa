@@ -1,43 +1,24 @@
 import express from "express";
+import path from 'path';
 import ProductManager from "./ProductManager.js";
+import productsRouter from "./routes/products.router.js"
+import cartRouter from "./routes/products.router.js"
+import __dirname from './util.js'
 
 
-const app = express();
-app.use(express.urlencoded({ extended: true }));
+//Declare Express server.
 const SERVER_PORT = 8080;
+const app = express();
 
-const productManager = new ProductManager();
+//Prepare server settings to receive JSON objects
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(path.join(__dirname +'/public')));
 
 
-app.get('/products', async (request, response) => {
-    let productos = await productManager.getProducts();
-    let limit = request.query.limit;
-    let responseHTML = '<html><body><h1>Productos</h1><ul>';
-    if (limit) {
-        let limits = productos.slice(0, limit);
-        limits.forEach(producto => {
-            responseHTML += `<li>${JSON.stringify(producto)}</li>`;
-        });
-    } else {
-        productos.forEach(producto => {
-            responseHTML += `<li>${JSON.stringify(producto)}</li>`;
-        });
-    }
-    responseHTML += '</ul></body></html>';
-    response.send(responseHTML);
-});
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartRouter);
 
-app.get('/products/:pid', async (request, response) => {
-
-    let productos = await productManager.getProducts();
-    const product = await productos.find(x => x.id === parseInt(request.params.pid));
-
-    if (product) {
-        response.send(`<html><body><h1>Producto: ${request.params.pid}</h1><ul><li>${JSON.stringify(product)}</li></ul></body></html>`);
-    } else {
-        response.send({ message: "Product not found" });
-    }
-});
 
 app.listen(SERVER_PORT, () => {
     console.log(`Servidor Express escuchando por el puerto: ${SERVER_PORT}`);
