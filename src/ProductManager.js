@@ -74,17 +74,22 @@ class ProductManager {
 
     async updateProduct(id, product) {
         try {
+            
+            const { id: ignoredId, ...updatedProduct } = product;
 
             this.products = await this.readProducts();
             const index = this.products.findIndex(p => p.id === id);
+
             if (index === -1) {
                 return {
                     success: false,
                     message: "Product with the provided id doesn't exist"
                 };
             }
-            this.products[index] = { ...this.products[index], ...product };
+
+            this.products[index] = { ...this.products[index], ...updatedProduct };
             await this.saveProducts();
+            
             return {
                 success: true
             };
