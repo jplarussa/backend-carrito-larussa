@@ -53,9 +53,9 @@ router.post('/', async (request, response) => {
         let productCreated = await productManager.addProduct(newProduct);
 
         if (productCreated.success) {            
-            response.status(201).send({message: "Product created successfully! Product:" + newProduct.title});
+            response.status(201).send(productCreated.message);
         } else {
-            response.status(400).send({message: "Error: Product already exists or not all fields have been completed."});
+            response.status(400).send(productCreated.message);
         }
         
     } catch (error) {
@@ -72,9 +72,9 @@ router.put('/:pid', async (request, response) => {
         let productUpdated = await productManager.updateProduct(productId, productFields);
 
         if (productUpdated.success) {            
-            response.status(201).send({message: "Product updated successfully! Product:" + productFields.title});
+            response.status(201).send(productUpdated.message);
         } else {
-            response.status(400).send({message: "Product with the provided id doesn't exist."});
+            response.status(400).send(productUpdated.message);
         }
         
     } catch (error) {
@@ -90,9 +90,9 @@ router.delete('/:pid', async (request, response) => {
         let productDeleted = await productManager.deleteProduct(productId)
 
         if (productDeleted.success) {            
-            response.status(201).send({message: "Product deleted successfully! Product ID:" + productId});
+            response.status(201).send(productDeleted.message);
         } else {
-            response.status(400).send({message: "Product with the provided id doesn't exist or something go wrong."});
+            response.status(400).send(productDeleted.message);
         }
         
     } catch (error) {

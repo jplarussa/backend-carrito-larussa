@@ -44,7 +44,8 @@ class ProductManager {
 
             await this.saveProducts();
             return {
-                success: true
+                success: true,
+                message: `Product ${JSON.stringify(newProduct)} added successfully`
             };
 
         } catch (error) {
@@ -122,7 +123,8 @@ class ProductManager {
             this.products.splice(index, 1);
             await this.saveProducts();
             return {
-                success: true
+                success: true,
+                message: "Product deleted"
             };
 
         } catch (error) {

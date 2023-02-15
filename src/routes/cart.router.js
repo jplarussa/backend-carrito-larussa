@@ -15,7 +15,7 @@ router.post('/', async (request, response) => {
         if (cartCreated.success) {            
             response.status(201).send({message: "Cart created successfully!"});
         } else {
-            response.status(400).send({message: "Error: Something go wrong creating the cart."});
+            response.status(400).send({message: "Error: Something went wrong creating the cart."});
         }
         
     } catch (error) {
@@ -26,17 +26,21 @@ router.post('/', async (request, response) => {
 router.post('/:cid/product/:pid', async (request, response) => {
     
     try {
+        const cartId = parseInt(request.params.cid);
+        const productId = parseInt(request.params.pid);
+        const quantity = 1;
+        const newProduct = { product: productId, quantity: quantity};
 
-        let cartCreated = await cartManager.addCart();
+        let cartUpdate = await cartManager.addProductToCart(cartId, newProduct);
 
-        if (cartCreated.success) {            
-            response.status(201).send({message: "Cart created successfully!"});
+        if (cartUpdate.success) {            
+            response.status(201).send(cartUpdate.message);
         } else {
-            response.status(400).send({message: "Error: Something go wrong creating the cart."});
+            response.status(400).send(cartUpdate.message);
         }
         
     } catch (error) {
-        response.status(500).send({error: "Error creating the cart.", message: error});
+        response.status(500).send({error: "Error adding the product", message: error});
     }
 });
 

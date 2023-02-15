@@ -1,6 +1,7 @@
 import fs from "fs";
-import path from "path";
-import __dirname from './util.js'
+import path, { resolve } from "path";
+import __dirname from './util.js';
+import ProductManager from "./ProductManager.js";
 
 class CartManager {
     constructor(filePath) {
@@ -49,6 +50,17 @@ class CartManager {
 
             const { product, quantity } = newProduct;
 
+            const productManager = new ProductManager();
+
+            // Check if the product exist
+            const checkProduct = await productManager.getProductById(product);
+            if (!checkProduct.success) {
+                return {
+                    success: false,
+                    message: `Product with id ${product} not found.`,
+                  };
+            }
+
             // Read the existing carts
             this.carts = await this.readCarts();
             const cart = this.carts.find(c => c.id === cartId);
@@ -59,24 +71,34 @@ class CartManager {
                     message: "Cart with the provided id doesn't exist"
                 };
             } else {
+                // Check if product already exists in cart
+                const existingProduct = cart.products.find(p => p.product === product);
 
-                this.cart[cartId].products.push(newProduct)
-                return {
-                    success: true,
-                    message: `${quantity} Products id: ${product} added to cart ${cartId}`
-                };
+                if (existingProduct) {
+                    // Add 1
+                    existingProduct.quantity++;
 
-                this.carts[cartId].products.quantity.push(newProduct)
+                    // Save to JSON
+                    await this.saveCarts();
 
-                return {
-                    success: true,
-                    product
-                };
-            };
+                    return {
+                        success: true,
+                        message: `${quantity} product with id ${product} added to cart ${cartId}`
+                    };
 
+                } else {
+                    // Add new product to cart
+                    cart.products.push({ product, quantity: 1 });
+                    await this.saveCarts();
+                    return {
+                        success: true,
+                        message: `${quantity} product with id ${product} added to cart ${cartId}`
+                    };
+                }
+            }
         } catch (error) {
             console.error(error.message);
-            throw Error(`Error while trying to get the product ${id}, error: ${error}`);
+            throw Error(`Error while trying to add the product id ${newProduct.product}, error: ${error}`);
         }
 
     }
