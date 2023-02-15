@@ -4,7 +4,7 @@ import __dirname from './util.js'
 
 class ProductManager {
     constructor(filePath) {
-        this.filePath = path.join(__dirname, 'data', 'Products.json');
+        this.filePath = path.join(__dirname, 'data', 'products.json');
         this.products = [];
         this.nextId = 0;
     }

@@ -1,8 +1,7 @@
 import express from "express";
 import path from 'path';
-import ProductManager from "./ProductManager.js";
 import productsRouter from "./routes/products.router.js"
-import cartRouter from "./routes/products.router.js"
+import cartRouter from "./routes/cart.router.js"
 import __dirname from './util.js'
 
 
