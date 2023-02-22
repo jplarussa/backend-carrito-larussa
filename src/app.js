@@ -1,8 +1,11 @@
 import express from "express";
 import path from 'path';
+import __dirname from './util.js'
 import productsRouter from "./routes/products.router.js"
 import cartRouter from "./routes/cart.router.js"
-import __dirname from './util.js'
+import viewsRouter from './routes/views.router.js';
+import handlebars from 'express-handlebars';
+import {setupWebSocket} from './websocket.js'
 
 
 //Declare Express server.
@@ -12,13 +15,23 @@ const app = express();
 //Prepare server settings to receive JSON objects
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+// Define path for static content
 app.use(express.static(path.join(__dirname +'/public')));
 
+// Define the template engine and views
+app.engine('handlebars', handlebars.engine());
+app.set('view engine', 'handlebars');
+app.set('views', __dirname + "/views");
 
+// Routes
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
+app.use("/", viewsRouter);
 
 
-app.listen(SERVER_PORT, () => {
+const httpServer = app.listen(SERVER_PORT, () => {
     console.log(`Servidor Express escuchando por el puerto: ${SERVER_PORT}`);
 })
+// Initialize websocket Server
+setupWebSocket(httpServer);

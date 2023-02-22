@@ -52,7 +52,8 @@ router.post('/', async (request, response) => {
         let newProduct = request.body;
         let productCreated = await productManager.addProduct(newProduct);
 
-        if (productCreated.success) {            
+        if (productCreated.success) {
+
             response.status(201).send(productCreated.message);
         } else {
             response.status(400).send(productCreated.message);

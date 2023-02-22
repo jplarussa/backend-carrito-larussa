@@ -50,7 +50,10 @@ class ProductManager {
 
         } catch (error) {
             console.error(error.message);
-            throw Error(`Error creating new product: ${JSON.stringify(newProduct)}, error detail: ${error}`);
+            return{
+                success: false,
+                message: `${error.message} - Product ${JSON.stringify(newProduct)} could not be added`
+            }
         }
     }
 
@@ -100,7 +103,8 @@ class ProductManager {
             await this.saveProducts();
             
             return {
-                success: true
+                success: true,
+                message: `Product ${id} updated`
             };
 
         } catch (error) {
