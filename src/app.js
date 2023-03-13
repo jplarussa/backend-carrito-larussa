@@ -6,7 +6,10 @@ import cartRouter from "./routes/cart.router.js";
 import viewsRouter from './routes/views.router.js';
 import handlebars from 'express-handlebars';
 import {setupWebSocket} from './websocket.js';
+import mongoose from 'mongoose';
 import { MONGODB_URI } from './config.js'; 
+// import {productsModel} from "./dao/models/products.model.js"
+
 
 
 //Declare Express server.
@@ -45,5 +48,24 @@ const connectMongoDB = async () => {
     } catch (error) {
         console.log("Error on connection to DB"+error);
     }
+
+/* PRUEBA DE REGISTRO
+     try {
+        let product = await productsModel.create({
+            title: "Pepe",
+            description: "Coco",
+            code: "699",
+            price: 10,
+            status: true,
+            stock: 100,
+            category: "chancho",
+            thumbnails: []
+        });
+
+        console.log("Product Added");
+        return "success"
+    } catch (error) {
+        return error;
+    } */
 }
 connectMongoDB();
