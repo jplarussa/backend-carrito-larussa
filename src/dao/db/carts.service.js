@@ -43,6 +43,10 @@ export default class CartManager {
             }
 
             const cart = await this.carts.findById(cartId);
+            console.log("1 "+JSON.stringify(productId))
+            console.log("2 "+JSON.stringify(this.carts))
+            console.log("3 "+JSON.stringify(this.carts.products.findById(productId))
+            const product = await this.carts.products.findById(productId);
 
             if (!cart) {
                 return {
@@ -51,23 +55,20 @@ export default class CartManager {
                 };
 
             } else {
-                // Check if product already exists in cart
+/*                 // Check if product already exists in cart
                 let existingProduct = cart.products.find(p => p.productId === productId);
-                console.log("1 "+JSON.stringify(existingProduct))
+                console.log("1 "+JSON.stringify(existingProduct)) */
 
-                if (existingProduct) {
+                if (product) {
                     // Add 1
-                    existingProduct.quantity++;
-                    
-                    console.log("2 "+JSON.stringify(existingProduct))
-                    console.log("3 "+JSON.stringify(existingProduct.quantity))
+                    product.quantity++;
 
                     const result = await cart.save();
 
                     return {
                         success: true,
                         data: result,
-                        message: `${existingProduct.quantity} product with id ${productId} added to cart ${cartId}`
+                        message: `1 product with id ${productId} added to cart ${cartId}`
                     };
 
                 } else {
