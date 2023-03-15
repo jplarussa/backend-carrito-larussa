@@ -1,15 +1,13 @@
 import express from "express";
 import path from 'path';
+import mongoose from 'mongoose';
+import handlebars from 'express-handlebars';
 import __dirname from './util.js';
 import productsRouter from "./routes/products.router.js";
 import cartRouter from "./routes/cart.router.js";
 import viewsRouter from './routes/views.router.js';
-import handlebars from 'express-handlebars';
 import {setupWebSocket} from './websocket.js';
-import mongoose from 'mongoose';
 import { MONGODB_URI } from './config.js'; 
-// import {productsModel} from "./dao/models/products.model.js"
-
 
 
 //Declare Express server.
@@ -35,7 +33,7 @@ app.use("/", viewsRouter);
 
 
 const httpServer = app.listen(SERVER_PORT, () => {
-    console.log(`Servidor Express escuchando por el puerto: ${SERVER_PORT}`);
+    console.log(`Express Server listening  on the port: ${SERVER_PORT}`);
 })
 // Initialize websocket Server
 setupWebSocket(httpServer);
@@ -49,23 +47,5 @@ const connectMongoDB = async () => {
         console.log("Error on connection to DB"+error);
     }
 
-/* PRUEBA DE REGISTRO
-     try {
-        let product = await productsModel.create({
-            title: "Pepe",
-            description: "Coco",
-            code: "699",
-            price: 10,
-            status: true,
-            stock: 100,
-            category: "chancho",
-            thumbnails: []
-        });
-
-        console.log("Product Added");
-        return "success"
-    } catch (error) {
-        return error;
-    } */
 }
 connectMongoDB();

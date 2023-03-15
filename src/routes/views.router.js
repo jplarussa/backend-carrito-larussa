@@ -1,5 +1,7 @@
 import { Router } from "express";
-import ProductManager from "../ProductManager.js";
+//import of the service for Products. (You can change to file system by swapping the commented line)
+// import ProductManager from "../dao/fs/ProductManager.js";
+import ProductManager from "../dao/db/products.service.js";
 import { io } from '../websocket.js'
 
 const router = Router();
@@ -51,7 +53,7 @@ router.post('/realtimeproducts', async (request, response) => {
 
 router.put('/realtimeproducts/:pid', async (request, response) => {
     try {
-        let productId = parseInt(request.params.pid);
+        const productId = request.params.pid;
         let productFields = request.body;
 
         let productUpdated = await productManager.updateProduct(productId, productFields);
@@ -74,7 +76,7 @@ router.put('/realtimeproducts/:pid', async (request, response) => {
 
 router.delete('/realtimeproducts/:pid', async (request, response) => {
     try {
-        let productId = parseInt(request.params.pid);
+        const productId = request.params.pid;
 
         let productDeleted = await productManager.deleteProduct(productId)
 

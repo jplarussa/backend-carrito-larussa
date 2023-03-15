@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import __dirname from './util.js'
+import __dirname from '../../util.js'
 
 class ProductManager {
     constructor(filePath) {

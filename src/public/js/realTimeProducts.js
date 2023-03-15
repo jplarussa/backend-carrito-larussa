@@ -15,8 +15,8 @@ socket.on('update-products', (data) => {
         <p>Stock: ${p.stock}</p>
         <p>Category: ${p.category}</p>
         <p>Code: ${p.code}</p>
-        <p>ID: ${p.id}</p>
-        <button class="btn btn-danger delete-btn" data-id="${p.id}">Delete</button>
+        <p>ID: ${p._id}</p>
+        <button class="btn btn-danger delete-btn" data-id="${p._id}">Delete</button>
         </div>`
     })
 
@@ -107,7 +107,8 @@ productForm.addEventListener('submit', (event) => {
             return alert('Status must be true or false.');
         }
 
-        const id = parseInt(idInput.value);
+        const id = idInput.value;
+        console.log(id);
 
         fetch(`/realtimeproducts/${id}`, {
             method: 'PUT',

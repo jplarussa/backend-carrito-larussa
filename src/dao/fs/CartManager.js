@@ -1,6 +1,6 @@
 import fs from "fs";
 import path, { resolve } from "path";
-import __dirname from './util.js';
+import __dirname from '../../util.js';
 import ProductManager from "./ProductManager.js";
 
 class CartManager {

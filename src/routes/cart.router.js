@@ -1,5 +1,8 @@
 import { Router} from "express";
-import CartManager from "../CartManager.js";
+//import of the service for Carts. (You can change to file system by swapping the commented line)
+// import CartManager from "../dao/fs/CartManager.js";
+import CartManager from "../dao/db/carts.service.js";
+
 
 const router = Router();
 
@@ -26,12 +29,10 @@ router.post('/', async (request, response) => {
 router.post('/:cid/product/:pid', async (request, response) => {
     
     try {
-        const cartId = parseInt(request.params.cid);
-        const productId = parseInt(request.params.pid);
-        const quantity = 1;
-        const newProduct = { product: productId, quantity: quantity};
+        const cartId = request.params.cid;
+        const productId = request.params.pid;
 
-        let cartUpdate = await cartManager.addProductToCart(cartId, newProduct);
+        let cartUpdate = await cartManager.addProductToCart(cartId, productId);
 
         if (cartUpdate.success) {            
             response.status(201).send(cartUpdate.message);
@@ -49,7 +50,8 @@ router.get('/:cid', async (request, response) => {
     try {
 
         let carts = await cartManager.getCarts();
-        const cart = await carts.find(c => c.id === parseInt(request.params.cid));
+
+        const cart = carts.find(c => c._id == request.params.cid);
     
         if (cart) {
             response.send(`<html><body><h1>Producto: ${request.params.cid}</h1><ul><li>${JSON.stringify(cart)}</li></ul></body></html>`);

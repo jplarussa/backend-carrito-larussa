@@ -14,7 +14,7 @@ const productsSchema = new mongoose.Schema({
     status: { type: Boolean, default: true, required: false},
     stock: numberRequired,
     category: stringRequired,
-    thumbnails: {type: Array}
+    thumbnail: {type: Array}
 });
 
 export const productsModel = mongoose.model(productsCollection,productsSchema);
