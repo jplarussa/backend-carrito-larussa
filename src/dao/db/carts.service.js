@@ -43,10 +43,6 @@ export default class CartManager {
             }
 
             const cart = await this.carts.findById(cartId);
-            console.log("1 "+JSON.stringify(productId))
-            console.log("2 "+JSON.stringify(this.carts))
-            console.log("3 "+JSON.stringify(this.carts.products.findById(productId))
-            const product = await this.carts.products.findById(productId);
 
             if (!cart) {
                 return {
@@ -55,21 +51,27 @@ export default class CartManager {
                 };
 
             } else {
-/*                 // Check if product already exists in cart
+                // Check if product already exists in cart
                 let existingProduct = cart.products.find(p => p.productId === productId);
-                console.log("1 "+JSON.stringify(existingProduct)) */
 
-                if (product) {
+                if (existingProduct) {
                     // Add 1
-                    product.quantity++;
+                    existingProduct.quantity++;
 
-                    const result = await cart.save();
+                // Find the index of the existing product in the array
+                const index = cart.products.findIndex(p => p.productId === productId);
 
-                    return {
-                        success: true,
-                        data: result,
-                        message: `1 product with id ${productId} added to cart ${cartId}`
-                    };
+                // Update the product in the database
+                const result = await this.carts.updateOne(
+                    { _id: cartId, "products.productId": productId },
+                    { $set: { [`products.${index}.quantity`]: existingProduct.quantity } }
+                );
+
+                return {
+                    success: true,
+                    data: result,
+                    message: `1 product with id ${productId} added to cart ${cartId}`
+                };
 
                 } else {
                     // Add new product to cart

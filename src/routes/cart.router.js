@@ -41,7 +41,8 @@ router.post('/:cid/product/:pid', async (request, response) => {
         }
         
     } catch (error) {
-        response.status(500).send({error: "Error adding the product", message: error});
+        console.log(error.message);
+        response.status(500).send({error: "Error adding the product to the cart"});
     }
 });
 
