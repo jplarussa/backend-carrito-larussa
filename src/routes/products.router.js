@@ -20,17 +20,13 @@ router.get('/', async (request, response) => {
             filter.status = status;
         }
 
-
-        console.log("FILTER "+filter+"SORT "+sort+"LIMIT "+limit+"PAGE "+page);
-
         let products = await productManager.getProducts({
             filter: filter,
-            sort: sort ? JSON.parse(sort) : {price: 1},
+            sort: sort ? sort : "desc",
             limit: limit ? parseInt(limit) :10,
             page: page ? parseInt(page) : 1,
         });
 
-        console.log(products);
         response.send({products});
 
     } catch (error) {

@@ -2,7 +2,7 @@ import { productsModel } from "../models/products.model.js"
 
 export default class ProductManager {
 
-    async getProducts({ filter = {}, sort = {price: 1}, limit, page }) {
+    async getProducts({ filter = {}, sort = "desc", limit, page }) {
         try {
 
             const pipeline = [];
@@ -16,15 +16,16 @@ export default class ProductManager {
                 pipeline.push({ $match: { status: statusValue } });
             }
 
-            if (sort.price) {
-                pipeline.push({ $sort: { price: parseInt(sort.price) } });
+            if (sort) {
+                const sortDirection = sort === 'desc' ? -1 : 1;
+                pipeline.push({ $sort: { price: sortDirection } });
             }
 
             if (limit && page) {
                 pipeline.push({ $skip: (page - 1) * limit });
                 pipeline.push({ $limit: limit });
             }
-            console.log("PIPILINE "+pipeline);
+
             const products = await productsModel.aggregate(pipeline).exec();
             return products;
 
