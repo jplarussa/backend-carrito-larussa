@@ -10,21 +10,28 @@ const productManager = new ProductManager();
 
 router.get('/', async (request, response) => {
     try {
-        let products = await productManager.getProducts();
-        let limit = request.query.limit;
-        let responseHTML = '<html><body><h1>Productos</h1><ul>';
-        if (limit) {
-            let limits = products.slice(0, limit);
-            limits.forEach(p => {
-                responseHTML += `<li>${JSON.stringify(p)}</li>`;
-            });
-        } else {
-            products.forEach(p => {
-                responseHTML += `<li>${JSON.stringify(p)}</li>`;
-            });
+        const {category, status, sort, limit, page} = request.query
+        let filter = {};
+
+        if (category) {
+            filter.category = category;
         }
-        responseHTML += '</ul></body></html>';
-        response.send(responseHTML);
+        if (status) {
+            filter.status = status;
+        }
+
+
+        console.log("FILTER "+filter+"SORT "+sort+"LIMIT "+limit+"PAGE "+page);
+
+        let products = await productManager.getProducts({
+            filter: filter,
+            sort: sort ? JSON.parse(sort) : {price: 1},
+            limit: limit ? parseInt(limit) :10,
+            page: page ? parseInt(page) : 1,
+        });
+
+        console.log(products);
+        response.send({products});
 
     } catch (error) {
         response.status(500).send({ error: "Error loading the products.", message: error });

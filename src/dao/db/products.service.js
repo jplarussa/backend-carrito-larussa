@@ -1,11 +1,33 @@
-import {productsModel} from "../models/products.model.js"
+import { productsModel } from "../models/products.model.js"
 
 export default class ProductManager {
 
-    async getProducts() {
+    async getProducts({ filter = {}, sort = {price: 1}, limit, page }) {
         try {
-            let products = await productsModel.find();
-            return products.map(product => product.toObject());
+
+            const pipeline = [];
+
+            if (filter.category) {
+                pipeline.push({ $match: { category: { $regex: new RegExp(filter.category, 'i') } } });
+            }
+
+            if (filter.status) {
+                const statusValue = filter.status === 'true' ? true : filter.status === 'false' ? false : null;
+                pipeline.push({ $match: { status: statusValue } });
+            }
+
+            if (sort.price) {
+                pipeline.push({ $sort: { price: parseInt(sort.price) } });
+            }
+
+            if (limit && page) {
+                pipeline.push({ $skip: (page - 1) * limit });
+                pipeline.push({ $limit: limit });
+            }
+            console.log("PIPILINE "+pipeline);
+            const products = await productsModel.aggregate(pipeline).exec();
+            return products;
+
         } catch (error) {
             return error;
         }
@@ -35,7 +57,7 @@ export default class ProductManager {
         try {
             let product = await productsModel.create(newproduct);
             console.log(product);
-            console.log(typeof(product));
+            console.log(typeof (product));
 
             console.log("Product Added");
             return {
@@ -49,7 +71,7 @@ export default class ProductManager {
 
     async deleteProduct(productId) {
         try {
-            let result = await productsModel.deleteOne({_id: productId});
+            let result = await productsModel.deleteOne({ _id: productId });
             console.log("Product Removed");
             return {
                 success: true,
@@ -62,7 +84,7 @@ export default class ProductManager {
 
     async updateProduct(productId, productToReplace) {
         try {
-            let product = await productsModel.updateOne({_id: productId},productToReplace);
+            let product = await productsModel.updateOne({ _id: productId }, productToReplace);
             console.log("Product Modified");
             return {
                 success: true,
