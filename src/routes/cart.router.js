@@ -49,19 +49,101 @@ router.post('/:cid/product/:pid', async (request, response) => {
 router.get('/:cid', async (request, response) => {
 
     try {
+        const cartId = request.params.cid;
+        let carts = await cartManager.getCart(cartId);
 
-        let carts = await cartManager.getCarts();
-
-        const cart = carts.find(c => c._id == request.params.cid);
-    
-        if (cart) {
-            response.send(`<html><body><h1>Producto: ${request.params.cid}</h1><ul><li>${JSON.stringify(cart)}</li></ul></body></html>`);
+        if (carts.success) {            
+            response.status(201).send(carts.message);
         } else {
-            response.status(400).send({ message: "Cart not found" });
+            response.status(400).send(carts.message);
         }
         
     } catch (error) {
         response.status(500).send({error: "Error error searching the cart.", message: error});
+    }
+
+});
+
+router.delete('/:cid/products/:pid', async (request, response) => {
+
+    try {
+        const cartId = request.params.cid;
+        const productId = request.params.pid;
+
+        let cartUpdate = await cartManager.deleteProductFromCart(cartId, productId);
+
+        if (cartUpdate.success) {            
+            response.status(201).send(cartUpdate.message);
+        } else {
+            response.status(400).send(cartUpdate.message);
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: "Error deleting the product in the cart"});
+    }
+
+});
+
+router.put('/:cid', async (request, response) => {
+
+    try {
+        const cartId = request.params.cid;
+        let newProducts = request.body;
+
+        let cartUpdate = await cartManager.updateCart(cartId, newProducts);
+
+        if (cartUpdate.success) {            
+            response.status(201).send(cartUpdate.message);
+        } else {
+            response.status(400).send(cartUpdate.message);
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: "Error updating products in the cart"});
+    }
+
+});
+
+router.put('/:cid/products/:pid', async (request, response) => {
+
+    try {
+        const cartId = request.params.cid;
+        const productId = request.params.pid;
+        const quantity = request.body.quantity;
+
+        let cartUpdate = await cartManager.updateProductQuantityInCart(cartId, productId, quantity);
+
+        if (cartUpdate.success) {            
+            response.status(201).send(cartUpdate.message);
+        } else {
+            response.status(400).send(cartUpdate.message);
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: "Error updating quantity in the cart"});
+    }
+
+});
+
+router.delete('/:cid', async (request, response) => {
+
+    try {
+        const cartId = request.params.cid;
+
+        let cartUpdate = await cartManager.emptyCart(cartId);
+
+        if (cartUpdate.success) {            
+            response.status(201).send(cartUpdate.message);
+        } else {
+            response.status(400).send(cartUpdate.message);
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: "Error emptying the cart"});
     }
 
 });
