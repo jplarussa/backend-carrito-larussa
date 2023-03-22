@@ -10,7 +10,7 @@ const productManager = new ProductManager();
 
 router.get('/', async (request, response) => {
     try {
-        console.log("REQUEST QUERTY : "+JSON.stringify(request.query));
+
         let products = await productManager.getProducts(request.query);
 
         response.status(200).send(products);

@@ -11,30 +11,27 @@ export default class ProductManager {
             let status = parameters.status ? (parameters.status.toLowerCase() === "true" ? true : parameters.status.toLowerCase() === "false" ? false : null) : null;
             let sort = parameters.sort ? (parameters.sort === "asc" ? 1 : parameters.sort === "desc" ? -1 : null) : null;
 
-            console.log("PARA STATUs: "+parameters.status);
-            console.log("STATUS : "+status);
-            console.log("PARA CATEG: "+parameters.category);
-            console.log("CATEG: "+category);
-            console.log("PARAMETERS SORT : "+parameters.sort);
-            console.log("SORT : "+sort);
 
             const filters = {};
             const options = {};
 
-            if (category !== undefined || status !== undefined) {
-                filters.category = category ? category : null;
-                filters.status = status ? status : null;
+            if (category || status) {
+                category ? filters.category = category : {}
+                status ? filters.status = status : {};
+/*                 filters.category = category ? category : {};
+                filters.status = status ? status : {}; */
             }
-            console.log("FILTERS : "+JSON.stringify(filters));
+
             options.limit = limit;
             options.page = page;
-            options.sort = {price: sort};
-            console.log("OP SORT :"+options.sort);
+            if (sort !== null) {
+                options.sort = { price: sort };
+            }
 
             const products = await productsModel.paginate(filters, options);
             console.log(products);
 
-            if(products.totalDocs > 0) {
+            if (products.totalDocs > 0) {
                 let response = {
                     status: "success",
                     payload: products.docs,
@@ -85,7 +82,6 @@ export default class ProductManager {
         try {
             let product = await productsModel.create(newproduct);
             console.log(product);
-            console.log(typeof (product));
 
             console.log("Product Added");
             return {

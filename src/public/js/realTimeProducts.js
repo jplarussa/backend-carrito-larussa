@@ -108,7 +108,6 @@ productForm.addEventListener('submit', (event) => {
         }
 
         const id = idInput.value;
-        console.log(id);
 
         fetch(`/realtimeproducts/${id}`, {
             method: 'PUT',
