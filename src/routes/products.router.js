@@ -10,24 +10,10 @@ const productManager = new ProductManager();
 
 router.get('/', async (request, response) => {
     try {
-        const {category, status, sort, limit, page} = request.query
-        let filter = {};
+        console.log("REQUEST QUERTY : "+JSON.stringify(request.query));
+        let products = await productManager.getProducts(request.query);
 
-        if (category) {
-            filter.category = category;
-        }
-        if (status) {
-            filter.status = status;
-        }
-
-        let products = await productManager.getProducts({
-            filter: filter,
-            sort: sort ? sort : "desc",
-            limit: limit ? parseInt(limit) :10,
-            page: page ? parseInt(page) : 1,
-        });
-
-        response.send({products});
+        response.status(200).send(products);
 
     } catch (error) {
         response.status(500).send({ error: "Error loading the products.", message: error });
