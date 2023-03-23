@@ -1,13 +1,12 @@
-
-    <div class="container">
-      <h1>Products</h1>
-      <div class="products">
-        {{#each productsToHtml}}
-        <div class="product-card">
-          <h3>{{this.title}}</h3>
-          <p>{{this.description}}</p>
-          <p>Price: $ {{this.price}}</p>
-        </div>
-        {{/each}}
-      </div>
-    </div>
+<div>
+    {{#each products}}
+    <p>{{this.first_name}}</p>
+    {{/each}}
+    {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
+    {{/if}}
+    {{this.page}}
+    {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+    {{/if}}
+</div>  

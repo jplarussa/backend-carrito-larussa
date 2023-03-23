@@ -25,6 +25,21 @@ router.get('/chat', (req, res) => {
 
 })
 
+router.get('/products', async (request, response) => {
+    try {
+        response.render("products", {
+            products,
+            hasPrevPage,
+            hasNextPage,
+            prevPage,
+            nextPage
+        });
+
+    } catch (error) {
+        response.status(500).send({ error: "Error ", message: error });
+    }
+});
+
 
 router.get('/realtimeproducts', async (request, response) => {
     try {
