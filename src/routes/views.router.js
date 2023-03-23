@@ -3,6 +3,7 @@ import { Router } from "express";
 // import ProductManager from "../dao/fs/ProductManager.js";
 import ProductManager from "../dao/db/products.service.js";
 import { io } from '../websocket.js'
+import { productsModel } from "../dao/models/products.model.js"
 
 const router = Router();
 
@@ -26,13 +27,16 @@ router.get('/chat', (req, res) => {
 })
 
 router.get('/products', async (request, response) => {
+    
+    const perPage = 10;
+    const page = request.query.page || 1;
+    
     try {
+        const products = await productsModel.paginate({}, { page, limit: perPage });
         response.render("products", {
-            products,
-            hasPrevPage,
-            hasNextPage,
-            prevPage,
-            nextPage
+            products: products.docs, 
+            currentPage: products.page, 
+            totalPages: products.totalPages
         });
 
     } catch (error) {
