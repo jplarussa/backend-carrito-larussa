@@ -50,18 +50,17 @@ router.get('/:cid', async (request, response) => {
 
     try {
         const cartId = request.params.cid;
-        let carts = await cartManager.getCart(cartId);
+        let result = await cartManager.getCart(cartId);
 
-        if (carts.success) {            
-            response.status(201).send(carts.message);
+        if (result.success) {            
+            response.status(200).send(result);
         } else {
-            response.status(400).send(carts.message);
+            response.status(404).send(result);
         }
         
     } catch (error) {
         response.status(500).send({error: "Error error searching the cart.", message: error});
     }
-
 });
 
 router.delete('/:cid/products/:pid', async (request, response) => {

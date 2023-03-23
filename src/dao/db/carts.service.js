@@ -1,6 +1,7 @@
 import { cartsModel } from "../models/carts.model.js"
 import ProductManager from "./products.service.js";
 
+
 export default class CartManager {
     constructor() {
         this.carts = cartsModel;
@@ -10,9 +11,7 @@ export default class CartManager {
     async addCart() {
         try {
 
-            const newCart = { products: [] };
-
-            const result = await this.carts.create(newCart);
+            const result = await this.carts.create({});
 
             console.log("Creating Cart:");
             console.log(result);
@@ -32,17 +31,22 @@ export default class CartManager {
         try {
 
             const productManager = new ProductManager();
-
             // Check if the product exist
             const checkProduct = await productManager.getProductById(productId);
+
+            console.log("CHECKPRODUCT: "+JSON.stringify(checkProduct));
+
             if (!checkProduct.success) {
                 return {
                     success: false,
                     message: `Product with id ${productId} not found.`,
                 };
             }
-
+            console.log("cartIDllega: "+cartId);
+            console.log("TYPE cartID: "+typeof(cartId));
             const cart = await this.carts.findById(cartId);
+            console.log("CART "+cart);
+            console.log("typeof CART "+typeof(cart));
 
             if (!cart) {
                 return {
@@ -52,23 +56,40 @@ export default class CartManager {
 
             } else {
                 // Check if product already exists in cart
-                let existingProduct = cart.products.find(p => p.productId.toString() === productId.toString());
+                console.log("productIDllega: "+productId);
+                console.log("TYPE productID: "+typeof(productId));
+                console.log("productID toString: "+(productId.toString()));
+
+                let existingProduct = cart.products.find(p => p.productId.equals(productId));
+                
+                console.log("EXISTING "+existingProduct);
 
                 if (existingProduct) {
                     // Add 1
                     existingProduct.quantity++;
+                    const result = await cart.save();
+
+                    console.log("Adding 1 more product "+productId+" to Cart: "+cartId);
+                
+                    return {
+                        success: true,
+                        data: result,
+                        message: `1 more product with id ${productId} added to cart ${cartId}`
+                    };
 
                 } else {
-                    const newProduct = { productId: productId };
+                    const newProduct = { productId: productId, quantity: 1 };
                     cart.products.push(newProduct);
+                    const result = await cart.save();
+                
+                    console.log("Adding 1 product "+productId+" to Cart: "+cartId);
+                
+                    return {
+                        success: true,
+                        data: result,
+                        message: `1 product with id ${productId} added to cart ${cartId}`
+                    };
                 }
-                const result = await cart.save();
-
-                return {
-                    success: true,
-                    data: result,
-                    message: `1 product with id ${productId} added to cart ${cartId}`
-                };
             }
 
         } catch (error) {
@@ -246,7 +267,7 @@ export default class CartManager {
 
     async getCart(cartId) {
         try {
-            const cart = await this.carts.findById(cartId).populate('products.productId');
+            const cart = await this.carts.findById(cartId);
             if (!cart) {
                 return {
                     success: false,
@@ -255,6 +276,7 @@ export default class CartManager {
             } else {
                 return {
                     success: true,
+                    message: `Cart with id ${cartId} found`,
                     data: cart
                 };
             }
