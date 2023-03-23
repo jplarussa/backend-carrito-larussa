@@ -88,7 +88,7 @@ router.put('/:cid', async (request, response) => {
 
     try {
         const cartId = request.params.cid;
-        let newProducts = request.body;
+        let newProducts = request.body.products;
 
         let cartUpdate = await cartManager.updateCart(cartId, newProducts);
 

@@ -34,19 +34,14 @@ export default class CartManager {
             // Check if the product exist
             const checkProduct = await productManager.getProductById(productId);
 
-            console.log("CHECKPRODUCT: "+JSON.stringify(checkProduct));
-
             if (!checkProduct.success) {
                 return {
                     success: false,
                     message: `Product with id ${productId} not found.`,
                 };
             }
-            console.log("cartIDllega: "+cartId);
-            console.log("TYPE cartID: "+typeof(cartId));
+
             const cart = await this.carts.findById(cartId);
-            console.log("CART "+cart);
-            console.log("typeof CART "+typeof(cart));
 
             if (!cart) {
                 return {
@@ -56,13 +51,8 @@ export default class CartManager {
 
             } else {
                 // Check if product already exists in cart
-                console.log("productIDllega: "+productId);
-                console.log("TYPE productID: "+typeof(productId));
-                console.log("productID toString: "+(productId.toString()));
 
                 let existingProduct = cart.products.find(p => p.productId.equals(productId));
-                
-                console.log("EXISTING "+existingProduct);
 
                 if (existingProduct) {
                     // Add 1
@@ -100,6 +90,9 @@ export default class CartManager {
 
     async updateCart(cartId, products) {
         try {
+            console.log("PRODUCTS "+JSON.stringify(products));
+            console.log("TYPE PRODUCTS "+typeof(products));
+
             const cart = await this.carts.findById(cartId);
             if (!cart) {
                 return {
@@ -155,7 +148,7 @@ export default class CartManager {
                     message: "Cart with the provided id doesn't exist"
                 };
             } else {
-                const index = cart.products.findIndex(p => p.productId.toString() === productId.toString());
+                const index = cart.products.findIndex(p => p.productId.equals(productId));
                 if (index === -1) {
                     return {
                         success: false,
@@ -185,7 +178,7 @@ export default class CartManager {
                     message: "Cart with the provided id doesn't exist"
                 };
             } else {
-                const existingProduct = cart.products.find(p => p.productId.toString() === productId.toString());
+                const existingProduct = cart.products.find(p => p.productId.equals(productId));
                 if (!existingProduct) {
                     return {
                         success: false,
@@ -206,56 +199,26 @@ export default class CartManager {
         }
     }
 
-    async updateCart(cartId, products) {
-        try {
-            const cart = await this.carts.findById(cartId);
-            if (!cart) {
-                return {
-                    success: false,
-                    message: "Cart with the provided id doesn't exist",
-                };
-            }
-            const cartProducts = cart.products.map((product) => {
-                const updatedProduct = products.find(
-                    (p) => p.product === product.product
-                );
-                if (updatedProduct) {
-                    return {
-                        product: product.product,
-                        quantity: updatedProduct.quantity,
-                    };
-                }
-                return product;
-            });
-            const updatedCart = await cart.updateOne({ products: cartProducts });
-            return {
-                success: true,
-                data: updatedCart,
-            };
-        } catch (error) {
-            console.log(error);
-            return {
-                success: false,
-                message: "Something went wrong while updating the cart",
-            };
-        }
-    }
-
     async emptyCart(cartId) {
         try {
             const cart = await this.carts.findById(cartId);
+
             if (!cart) {
                 return {
                     success: false,
                     message: "Cart with the provided id doesn't exist",
                 };
             }
+
             cart.products = [];
-            await this.carts.updateById(cartId, cart);
+            const result = await cart.save();
+
             return {
                 success: true,
+                data: result,
                 message: "Cart has been emptied",
             };
+            
         } catch (error) {
             console.error(error);
             return {
