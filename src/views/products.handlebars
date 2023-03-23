@@ -1,12 +1,41 @@
-<div>
+{{#if products}}
+  <h1>Productos</h1>
+  <ul>
     {{#each products}}
-    <p>{{this.first_name}}</p>
+      <li>
+        <h3>{{this.name}}</h3>
+        <p>Precio: ${{this.price}}</p>
+        <p>Categoría: {{this.category}}</p>
+        <button onclick="addToCart('{{this._id}}')">Agregar al carrito</button>
+      </li>
     {{/each}}
-    {{#if hasPrevPage}}
-    <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
-    {{/if}}
-    {{this.page}}
-    {{#if hasNextPage}}
-    <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
-    {{/if}}
-</div>  
+  </ul>
+  {{#if totalPages}}
+    <div>
+      <p>Página {{page}} de {{totalPages}}</p>
+      <div>
+        {{#if hasPrevPage}}
+          <a href="/products?page={{prevPage}}">&lt; Anterior</a>
+        {{/if}}
+        {{#if hasNextPage}}
+          <a href="/products?page={{nextPage}}">Siguiente &gt;</a>
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
+{{else}}
+  <p>No se encontraron productos</p>
+{{/if}}
+
+<script>
+  function addToCart(productId) {
+    fetch('/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId }),
+    })
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(err => console.error(err));
+  }
+</script>
