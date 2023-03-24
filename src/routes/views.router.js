@@ -34,12 +34,16 @@ router.get('/products', async (request, response) => {
     
     try {
         const products = await productsModel.paginate({}, { page, limit: perPage, lean: true });
-
+        console.log(products);
         response.render("products", {
 
             products: products.docs, 
-            currentPage: products.page, 
-            totalPages: products.totalPages
+            currentPage: page, 
+            totalPages: products.totalPages,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage
         });
 
     } catch (error) {
