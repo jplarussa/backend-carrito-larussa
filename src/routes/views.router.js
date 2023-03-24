@@ -4,6 +4,7 @@ import { Router } from "express";
 import ProductManager from "../dao/db/products.service.js";
 import { io } from '../websocket.js'
 import { productsModel } from "../dao/models/products.model.js"
+import { cartsModel } from "../dao/models/carts.model.js"
 
 const router = Router();
 
@@ -32,14 +33,38 @@ router.get('/products', async (request, response) => {
     const page = request.query.page || 1;
     
     try {
-        const products = await productsModel.paginate({}, { page, limit: perPage });
+        const products = await productsModel.paginate({}, { page, limit: perPage, lean: true });
+
         response.render("products", {
+
             products: products.docs, 
             currentPage: products.page, 
             totalPages: products.totalPages
         });
 
     } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ error: "Error ", message: error });
+    }
+});
+
+router.get('/carts/:cid', async (request, response) => {
+    
+    const perPage = 10;
+    const page = request.query.page || 1;
+    
+    try {
+        const carts = await cartsModel.paginate({}, { page, limit: perPage, lean: true });
+
+        response.render("carts", {
+
+            carts: carts.docs, 
+            currentPage: carts.page, 
+            totalPages: carts.totalPages
+        });
+
+    } catch (error) {
+        console.log(error.message);
         response.status(500).send({ error: "Error ", message: error });
     }
 });
