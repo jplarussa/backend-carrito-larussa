@@ -12,6 +12,22 @@ form.addEventListener('submit', e => {
         headers: {
             'Content-Type': 'application/json'
         }
-    }).then(result => result.json()).then(
-        json => console.log(json));
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Server error');
+        }
+    })
+    .then(data => {
+        if (data.status === "success") {
+            window.location.href = data.redirectUrl;
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 });

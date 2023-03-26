@@ -28,6 +28,9 @@ router.post('/register', publicRouteMiddleware, async (req, res) => {
     console.log("Registering user: " + JSON.stringify(req.body));
 
     const userExists = await userModel.findOne({ email });
+    
+    console.log(userExists);
+
     if (userExists) {
         return res.status(400).send({ status: "error", message: "User already exist." })
     }
@@ -45,7 +48,12 @@ router.post('/register', publicRouteMiddleware, async (req, res) => {
     }
 
     const result = await userModel.create(user);
-    res.status(201).send({ status: "success", message: `User created successfully, ID: ${result.id}` })
+    res.status(201).json({
+        status: "success",
+        message: `User created successfully, ID: ${result.id}`,
+        redirectUrl: '/users/login'
+    });
+
 })
 
 router.post('/login', publicRouteMiddleware, async (req, res) => {
