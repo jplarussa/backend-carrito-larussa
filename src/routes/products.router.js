@@ -12,7 +12,6 @@ router.get('/', async (request, response) => {
     try {
 
         let products = await productManager.getProducts(request.query);
-
         response.status(200).send(products);
 
     } catch (error) {
