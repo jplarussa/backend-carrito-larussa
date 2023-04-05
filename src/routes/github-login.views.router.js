@@ -7,7 +7,7 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-    res.redirect("/users");
+    res.redirect("/products");
 });
 
 router.get("/error", (req, res) => {

@@ -11,8 +11,8 @@ const router = Router();
 // Product manager initalizing
 const productManager = new ProductManager();
 
-router.get('/', (request, response) => {
-        response.render("home"); //temporary page
+router.get('/', (req, res) => {
+    res.redirect("/users/login");
 });
 
 router.get('/chat', (req, res) => {
