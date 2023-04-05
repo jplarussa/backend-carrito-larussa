@@ -1,19 +1,24 @@
 import express from "express";
-import path from 'path';
-import mongoose from 'mongoose';
 import handlebars from 'express-handlebars';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import __dirname from './util.js';
+import path from 'path';
 import {setupWebSocket} from './websocket.js';
+//Database
+import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import { MONGODB_URI } from './config.js';
-import session from 'express-session';
-
+// Passport
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 // Routers
 import productsRouter from "./routes/products.router.js";
 import cartRouter from "./routes/cart.router.js";
 import viewsRouter from './routes/views.router.js';
 import usersViewsRouter from './routes/user.views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
+import githubLoginRouter from './routes/github-login.views.router.js'
 
 
 //Declare Express server.
@@ -38,20 +43,28 @@ app.use(session(
         store: MongoStore.create({
             mongoUrl: MONGODB_URI,
             mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
-            ttl: 120,
+            ttl: 40,
         }),
         secret: "Codigoxxx",
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: true
     }
 ))
 
+// COOKIES
+app.use(cookieParser("Cookie$C0der"));
+
+//MIDDLEWARE PASSPORT
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/users", usersViewsRouter);
+app.use("/github", githubLoginRouter);
 app.use("/", viewsRouter);
 
 

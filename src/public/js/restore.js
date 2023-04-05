@@ -1,4 +1,4 @@
-const form = document.getElementById('loginForm');
+const form = document.getElementById('restoreForm');
 
 form.addEventListener('submit', e => {
     e.preventDefault();
@@ -9,7 +9,7 @@ form.addEventListener('submit', e => {
         obj[key] = value
     });
 
-    fetch('/api/sessions/login', {
+    fetch('/api/sessions/restore', {
         method: 'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -17,11 +17,12 @@ form.addEventListener('submit', e => {
         }
     }).then(result => {
         if (result.status === 200) {
-            window.location.replace('/users');
-
-        } else if (result.status === 401) {
-            console.log(result);
-            alert("Invalid login, check your credentials!");
+            result.json();
+            alert("Password restored successfully")
+            window.location.replace('/users/login');
+        } else {
+            alert(`Error restoring password`)
         }
-    })
+    }).then(
+        json => console.log(json));
 });

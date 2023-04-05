@@ -22,9 +22,11 @@ form.addEventListener('submit', e => {
     })
     .then(data => {
         if (data.status === "success") {
+            alert("User created successfully")
             window.location.href = data.redirectUrl;
         } else {
             console.error('Error:', data.message);
+            alert(`Error: ${data.message}`);
         }
     })
     .catch(error => {

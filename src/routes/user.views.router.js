@@ -13,6 +13,12 @@ router.get('/register', publicRouteMiddleware, (req, res)=>{
     res.render('register');
 })
 
+
+router.get('/restore', publicRouteMiddleware, (req, res)=>{
+
+    res.render('restore');
+})
+
 router.get('/', privateRouteMiddleware, (req, res)=>{
 
     res.render('products', {
@@ -21,5 +27,8 @@ router.get('/', privateRouteMiddleware, (req, res)=>{
     });
 })
 
+router.get("/error", (req, res)=>{
+    res.render("error");
+});
 
 export default router;
