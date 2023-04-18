@@ -38,7 +38,7 @@ export const authToken = (req, res, next) => {
 
 // Middleware for public routes
 export const publicRouteMiddleware = (req, res, next) => {
-    if (req.session.user) {
+    if (req.user) {
         console.log("Already logged in, redirect");
         return res.redirect('/products');
     }
@@ -47,7 +47,7 @@ export const publicRouteMiddleware = (req, res, next) => {
 
 // Middleware for private routes
 export const privateRouteMiddleware = (req, res, next) => {
-    if (!req.session.user) {
+    if (!req.user) {
         console.log("Redirect to log in");
         return res.redirect('/users/login');
     }

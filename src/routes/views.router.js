@@ -24,9 +24,8 @@ router.get('/products',passportCall('jwt'), async (req, res) => {
     const perPage = 10;
     const page = req.query.page || 1;
 
-    const userLogged = req.user;
     console.log("User loggued: ");
-    console.log(userLogged);
+    console.log(req.user);
     try {
         const products = await productsModel.paginate({}, { page, limit: perPage, lean: true });
         console.log(products);

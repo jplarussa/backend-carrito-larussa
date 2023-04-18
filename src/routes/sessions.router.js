@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import userModel from '../dao/models/user.model.js';
 import passport from 'passport';
-import { createHash, passportCall, publicRouteMiddleware, generateJwtToken } from '../util.js';
+import { createHash, passportCall, publicRouteMiddleware, generateJwtToken, privateRouteMiddleware } from '../util.js';
 
 const router = Router();
 
@@ -31,6 +31,15 @@ router.post('/login', publicRouteMiddleware, passportCall('login'), async (req, 
     });
 
     res.redirect('/products')
+})
+
+router.get('/current', passportCall('jwt'), async (req, res) => {
+
+    console.log("User loggued: ");
+    console.log(req.user);
+
+    res.json({ payload: req.user });
+
 })
 
 router.post('/logout', (req, res) => {

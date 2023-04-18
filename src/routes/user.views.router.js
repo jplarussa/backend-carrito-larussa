@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {privateRouteMiddleware, publicRouteMiddleware} from '../util.js'
+import {privateRouteMiddleware, publicRouteMiddleware, passportCall} from '../util.js'
 
 const router = Router();
 
@@ -19,11 +19,10 @@ router.get('/restore', publicRouteMiddleware, (req, res)=>{
     res.render('restore');
 })
 
-router.get('/', privateRouteMiddleware, (req, res)=>{
+router.get('/', passportCall('jwt'), (req, res)=>{
 
     res.render('products', {
-        user: req.session.user,
-        admin: req.session.admin
+        user: req.user,
     });
 })
 
