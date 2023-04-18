@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {privateRouteMiddleware, publicRouteMiddleware} from './sessions.router.js'
+import {privateRouteMiddleware, publicRouteMiddleware} from '../util.js'
 
 const router = Router();
 

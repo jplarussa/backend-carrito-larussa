@@ -13,47 +13,40 @@ const ExtractJWT = jwtStrategy.ExtractJwt;
 
 const initializePassport = () => {
 
-    //Strategy to get JWT Token by Cookie:
-    passport.use('jwt', new JwtStrategy(
-        {
-            jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-            secretOrKey: PRIVATE_KEY
-        }, async (jwt_payload, done) => {
-            console.log("Entering passport Strategy with JWT.");
-            try {
-                console.log("JWT obtained from payload");
-                console.log(jwt_payload);
-                return done(null, jwt_payload.user);
-            } catch (error) {
-                console.error(error);
-                return done(error);
-            }
-        }
-    ));
-
         passport.use('register', new LocalStrategy(
             { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
     
-                const { first_name, last_name, email, age } = req.body;
-    
+                const { first_name, last_name, age } = req.body;
+                console.log("Registering user: " + JSON.stringify(req.body));
+
                 try {
     
-                    const userExists = await userModel.findOne({ email:username });
+                    const userExists = await userModel.findOne({ email: username });
                     if (userExists) {
                         console.log("User already exist.");
-                        return done(null, false);
+                        return done(null, false,{messages:'User already exist.'});
+                        //return res.status(400).send({ status: "error", message: "User already exist." })
                     }
     
                     const user = {
                         first_name,
                         last_name,
-                        email,
+                        email: username,
                         age,
                         password: createHash(password),
                     }
+
+                    if (user.email === "adminCoder@coder.com" && password === "adminCod3r123") {
+                        user.role = 'admin';
+                    }
     
                     const result = await userModel.create(user);
-                    return done(null, result);
+/*                     res.status(201).json({
+                        status: "success",
+                        message: `User created successfully, ID: ${result.id}`,
+                        redirectUrl: '/users/login'
+                    }); */
+                    return done(null, result,{messages:`User created successfully, ID: ${result.id}`});
     
                 } catch (error) {
                     return done("Error getting user: " + error + " "+err.message)
@@ -63,18 +56,20 @@ const initializePassport = () => {
     
         passport.use('login', new LocalStrategy(
             { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
+
                 try {
+
                     const user = await userModel.findOne({ email: username });
                     console.log("User finded for login:");
                     console.log(user);
     
                     if (!user) {
                         console.warn("User doesn't exists with username: " + username);
-                        return done(null, false);
+                        return done(null, false,{messages:"Invalid credentials."});
                     }
                     if (!isValidPassword(user, password)) {
                         console.warn("Invalid credentials for user: " + username);
-                        return done(null, false);
+                        return done(null, false,{messages:"Invalid credentials."});
                     }
     
                     return done(null, user);
@@ -85,6 +80,27 @@ const initializePassport = () => {
             })
         );
     
+    //Strategy to get JWT Token by Cookie:
+    passport.use('jwt', new JwtStrategy(
+        {
+            jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+            secretOrKey: PRIVATE_KEY
+
+        }, async (jwt_payload, done) => {
+
+            console.log("Entering passport Strategy with JWT.");
+
+            try {
+                console.log("JWT obtained from payload");
+                console.log(jwt_payload);
+                return done(null, jwt_payload.user);
+
+            } catch (error) {
+                console.error(error);
+                return done(error);
+            }
+        }
+    ));
 
 
     passport.use('github', new GitHubStrategy(
