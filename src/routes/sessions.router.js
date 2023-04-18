@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import userModel from '../dao/models/user.model.js';
 import passport from 'passport';
-import { createHash } from '../util.js';
+import { createHash, isValidPassword } from '../util.js';
 
 const router = Router();
 
@@ -42,7 +42,7 @@ router.post('/register', publicRouteMiddleware, async (req, res) => {
         last_name,
         email,
         age,
-        password
+        password: createHash(password)
     }
 
     if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
@@ -61,12 +61,16 @@ router.post('/register', publicRouteMiddleware, async (req, res) => {
 router.post('/login', publicRouteMiddleware, async (req, res) => {
 
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email, password });
+    const user = await userModel.findOne({ email });
 
     if (!user) {
         return res.status(401).send({ status: "error", error: "Incorrect credentials." });
     }
 
+    if (!isValidPassword(user, password)) {
+        console.warn("Invalid credentials for user: " + email);
+        return res.status(401).send({status:"error",error:"Incorrect credentials."});
+    }
 
 
     req.session.user = {

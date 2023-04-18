@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre(/^find/, function (next) {
     this.populate("cart.cartId");
+    next();
 });
 
 const userModel = mongoose.model(collection, userSchema);
