@@ -1,9 +1,12 @@
 import passport from 'passport'
 import jwtStrategy from 'passport-jwt'
+import LocalStrategy from 'passport-local'
 import GitHubStrategy from 'passport-github2';
 import userModel from '../dao/models/user.model.js'
 import { createHash, isValidPassword } from '../util.js'
 import { GHclientID, GHClientSecret, PRIVATE_KEY } from '../config.js';
+
+const LocalStrategy = passportLocal.Strategy;
 
 const JwtStrategy = jwtStrategy.Strategy;
 const ExtractJWT = jwtStrategy.ExtractJwt;
@@ -28,14 +31,14 @@ const initializePassport = () => {
         }
     ));
 
-    /*     passport.use('register', new LocalStrategy(
+        passport.use('register', new LocalStrategy(
             { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
     
                 const { first_name, last_name, email, age } = req.body;
     
                 try {
     
-                    const userExists = await userModel.findOne({ email });
+                    const userExists = await userModel.findOne({ email:username });
                     if (userExists) {
                         console.log("User already exist.");
                         return done(null, false);
@@ -81,7 +84,7 @@ const initializePassport = () => {
                 }
             })
         );
-     */
+    
 
 
     passport.use('github', new GitHubStrategy(
