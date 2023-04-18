@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const collection = 'users';
 
-const schema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     first_name: String,
     last_name: String,
     email: {
@@ -16,8 +16,21 @@ const schema = new mongoose.Schema({
         default: 'user',
         enum: ['user', 'admin'],
     },
+    cart: {
+        type: [{
+                cartId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "carts"
+                }
+            }],
+        default:[]
+    }
 })
 
-const userModel = mongoose.model(collection, schema);
+userSchema.pre(/^find/, function (next) {
+    this.populate("cart.cartId");
+});
+
+const userModel = mongoose.model(collection, userSchema);
 
 export default userModel;
