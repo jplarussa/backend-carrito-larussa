@@ -5,6 +5,7 @@ import ProductManager from "../dao/db/products.service.js";
 import { io } from '../websocket.js'
 import { productsModel } from "../dao/models/products.model.js"
 import { cartsModel } from "../dao/models/carts.model.js"
+import { passportCall } from "../util.js";
 
 const router = Router();
 
@@ -19,24 +20,27 @@ router.get('/chat', (req, res) => {
     res.render("chat", { });
 })
 
-router.get('/products', async (request, response) => {
+router.get('/products',passportCall('jwt'), async (req, res) => {
     const perPage = 10;
-    const page = request.query.page || 1;
-    
+    const page = req.query.page || 1;
+
+    const userLogged = req.user;
+    console.log("User loggued: ");
+    console.log(userLogged);
     try {
         const products = await productsModel.paginate({}, { page, limit: perPage, lean: true });
         console.log(products);
 
         let user, admin = null;
         
-        if (request.session.user) {
-            user = request.session.user;
+        if (req.user) {
+            user = req.user;
         }
-        if (request.session.admin) {
-            admin = request.session.admin;
+        if (req.user.role === "admin") {
+            admin = true;
         }
 
-        response.render("products", {
+        res.render("products", {
             products: products.docs, 
             currentPage: page, 
             totalPages: products.totalPages,
@@ -50,17 +54,17 @@ router.get('/products', async (request, response) => {
 
     } catch (error) {
         console.log(error.message);
-        response.status(500).send({ error: "Error ", message: error });
+        res.status(500).send({ error: "Error ", message: error });
     }
 });
 
-router.get('/carts/:cid', async (request, response) => {
+router.get('/carts/:cid', async (req, res) => {
     const perPage = 10;
-    const page = request.query.page || 1;
+    const page = req.query.page || 1;
     
     try {
         const carts = await cartsModel.paginate({}, { page, limit: perPage, lean: true });
-        response.render("carts", {
+        res.render("carts", {
             carts: carts.docs, 
             currentPage: carts.page, 
             totalPages: carts.totalPages
@@ -68,68 +72,68 @@ router.get('/carts/:cid', async (request, response) => {
 
     } catch (error) {
         console.log(error.message);
-        response.status(500).send({ error: "Error ", message: error });
+        res.status(500).send({ error: "Error ", message: error });
     }
 });
 
 
-router.get('/realtimeproducts', async (request, response) => {
+router.get('/realtimeproducts', async (req, res) => {
     try {
-        response.render("realTimeProducts");
+        res.render("realTimeProducts");
     } catch (error) {
-        response.status(500).send({ error: "Error ", message: error });
+        res.status(500).send({ error: "Error ", message: error });
     }
 });
 
-router.post('/realtimeproducts', async (request, response) => {
+router.post('/realtimeproducts', async (req, res) => {
     try {
-        let newProduct = request.body;
+        let newProduct = req.body;
         let productCreated = await productManager.addProduct(newProduct);
 
         if (productCreated.success) {
             io.emit("update-products", await productManager.getProducts());
-            response.status(201).send(productCreated.message);
+            res.status(201).send(productCreated.message);
         } else {
-            response.status(400).send(productCreated.message);
+            res.status(400).send(productCreated.message);
         }
 
     } catch (error) {
-        response.status(500).send({ error: "Error saving product.", message: error });
+        res.status(500).send({ error: "Error saving product.", message: error });
     }
 });
 
-router.put('/realtimeproducts/:pid', async (request, response) => {
+router.put('/realtimeproducts/:pid', async (req, res) => {
     try {
-        const productId = request.params.pid;
-        let productFields = request.body;
+        const productId = req.params.pid;
+        let productFields = req.body;
         let productUpdated = await productManager.updateProduct(productId, productFields);
 
         if (productUpdated.success) {
             io.emit("update-products", await productManager.getProducts());
-            response.status(201).send(productUpdated.message);
+            res.status(201).send(productUpdated.message);
         } else {
-            response.status(400).send(productUpdated.message);
+            res.status(400).send(productUpdated.message);
         }
 
     } catch (error) {
-        response.status(500).send({ error: "Error saving product.", message: error });
+        res.status(500).send({ error: "Error saving product.", message: error });
     }
 });
 
-router.delete('/realtimeproducts/:pid', async (request, response) => {
+router.delete('/realtimeproducts/:pid', async (req, res) => {
     try {
-        const productId = request.params.pid;
+        const productId = req.params.pid;
         let productDeleted = await productManager.deleteProduct(productId)
 
         if (productDeleted.success) {
             io.emit("update-products", await productManager.getProducts());
-            response.status(201).send(productDeleted.message);
+            res.status(201).send(productDeleted.message);
         } else {
-            response.status(400).send(productDeleted.message);
+            res.status(400).send(productDeleted.message);
         }
 
     } catch (error) {
-        response.status(500).send({ error: "Error saving product.", message: error });
+        res.status(500).send({ error: "Error saving product.", message: error });
     }
 });
 

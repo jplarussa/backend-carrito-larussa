@@ -1,6 +1,6 @@
 import passport from 'passport'
 import jwtStrategy from 'passport-jwt'
-import LocalStrategy from 'passport-local'
+import passportLocal from 'passport-local'
 import GitHubStrategy from 'passport-github2';
 import userModel from '../dao/models/user.model.js'
 import { createHash, isValidPassword } from '../util.js'
@@ -25,7 +25,6 @@ const initializePassport = () => {
                     if (userExists) {
                         console.log("User already exist.");
                         return done(null, false,{messages:'User already exist.'});
-                        //return res.status(400).send({ status: "error", message: "User already exist." })
                     }
     
                     const user = {
@@ -41,11 +40,7 @@ const initializePassport = () => {
                     }
     
                     const result = await userModel.create(user);
-/*                     res.status(201).json({
-                        status: "success",
-                        message: `User created successfully, ID: ${result.id}`,
-                        redirectUrl: '/users/login'
-                    }); */
+
                     return done(null, result,{messages:`User created successfully, ID: ${result.id}`});
     
                 } catch (error) {

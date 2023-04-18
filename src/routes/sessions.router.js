@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import userModel from '../dao/models/user.model.js';
 import passport from 'passport';
-import { createHash, isValidPassword, passportCall, publicRouteMiddleware } from '../util.js';
+import { createHash, passportCall, publicRouteMiddleware, generateJwtToken } from '../util.js';
 
 const router = Router();
 
@@ -14,21 +14,28 @@ router.post('/register', publicRouteMiddleware, passportCall('register'), async 
 
 router.post('/login', publicRouteMiddleware, passportCall('login'), async (req, res) => {
 
-    req.session.user = {
-        name: `${req.user.first_name} ${req.user.last_name}`,
-        email: req.user.email,
-        age: req.user.age
+    const user = req.user;
+    const tokenUser = {
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        age: user.age,
+        role: user.role
     }
 
-    if (req.user.role === 'admin') {
-        req.session.admin = true;
-    }
+    const access_token = generateJwtToken(tokenUser)
+    console.log(access_token);
+    
+    res.cookie('jwtCookieToken', access_token, {
+        maxAge: 180000,
+        httpOnly: true
+    });
 
-    return res.redirect('/products');
+    res.redirect('/products')
 })
 
 router.post('/logout', (req, res) => {
     req.session.destroy();
+    res.clearCookie('jwtCookieToken');
     res.redirect('/users/login');
     console.log("User logout");
 });

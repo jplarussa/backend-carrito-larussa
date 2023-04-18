@@ -16,16 +16,16 @@ export const isValidPassword = (user, password) => {
 }
 
 //JSON Web Tokens JWT functinos:
-export const generateJWToken = (user) => {
+export const generateJwtToken = (user) => {
     return jwt.sign({user}, PRIVATE_KEY, {expiresIn: '120s'});
 };
 
 export const authToken = (req, res, next) => {
-    //Remember that the token comes from the authorization headers
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).send({error: "Not authenticated"})
+    //Remember that the token comes from the cookies
+    const cookieToken = req.cookies.jwtCookieToken
+    if (!cookieToken) return res.status(401).send({error: "Not authenticated"})
 
-    const token = authHeader.split(' ')[1]; //The split is made to remove the word Bearer
+    const token = cookieToken.split(' ')[1]; //The split is made to remove the word Bearer
     jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
         //jwt checks the existing token and checks if it is a valid token or altered one
         if (error) return res.status(403).send({ error: "Token invalid - Unauthorized" })
