@@ -1,11 +1,12 @@
 import passport from 'passport'
-import passportLocal from 'passport-local'
+import jwtStrategy from 'passport-jwt'
 import GitHubStrategy from 'passport-github2';
 import userModel from '../dao/models/user.model.js'
 import { createHash, isValidPassword } from '../util.js'
-import { GHclientID, GHClientSecret } from '../config.js';
+import { GHclientID, GHClientSecret, PRIVATE_KEY } from '../config.js';
 
-const LocalStrategy = passportLocal.Strategy;
+const JwtStrategy = jwtStrategy.Strategy;
+const ExtractJWT = jwtStrategy.ExtractJwt;
 
 const initializePassport = () => {
 
