@@ -4,7 +4,7 @@ import passportLocal from 'passport-local'
 import GitHubStrategy from 'passport-github2';
 import userModel from '../dao/models/user.model.js'
 import { createHash, isValidPassword } from '../util.js'
-import { GHclientID, GHClientSecret, PRIVATE_KEY } from '../config.js';
+import config from './config.js';
 
 const LocalStrategy = passportLocal.Strategy;
 
@@ -35,7 +35,7 @@ const initializePassport = () => {
                         password: createHash(password),
                     }
 
-                    if (user.email === "adminCoder@coder.com" && password === "adminCod3r123") {
+                    if (user.email === config.adminName && password === config.adminPassword) {
                         user.role = 'admin';
                     }
     
@@ -79,7 +79,7 @@ const initializePassport = () => {
     passport.use('jwt', new JwtStrategy(
         {
             jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-            secretOrKey: PRIVATE_KEY
+            secretOrKey: config.jwtPrivateKey
 
         }, async (jwt_payload, done) => {
 
@@ -100,8 +100,8 @@ const initializePassport = () => {
 
     passport.use('github', new GitHubStrategy(
         {
-            clientID: GHclientID,
-            clientSecret: GHClientSecret,
+            clientID: config.GHclientID,
+            clientSecret: config.GHClientSecret,
             callbackUrl: 'http://localhost:8080/api/sessions/githubcallback'
         },
         async (accessToken, refreshToken, profile, done) => {

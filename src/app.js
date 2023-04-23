@@ -5,10 +5,10 @@ import cookieParser from 'cookie-parser';
 import __dirname from './util.js';
 import path from 'path';
 import {setupWebSocket} from './websocket.js';
+import config from "./config/config.js";
 //Database
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
-import { MONGODB_URI } from './config.js';
 // Passport
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -41,7 +41,7 @@ app.set('views', __dirname + "/views");
 app.use(session(
     {
         store: MongoStore.create({
-            mongoUrl: MONGODB_URI,
+            mongoUrl: config.mongoUrl,
             mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
             ttl: 40,
         }),
@@ -68,8 +68,8 @@ app.use("/github", githubLoginRouter);
 app.use("/", viewsRouter);
 
 
-const httpServer = app.listen(SERVER_PORT, () => {
-    console.log(`Express Server listening  on the port: ${SERVER_PORT}`);
+const httpServer = app.listen(config.port, () => {
+    console.log(`Express Server listening  on the port: ${config.port}`);
 })
 // Initialize websocket Server
 setupWebSocket(httpServer);
@@ -77,7 +77,7 @@ setupWebSocket(httpServer);
 // Connect to MongoDb
 const connectMongoDB = async () => {
     try {
-        await mongoose.connect(MONGODB_URI);
+        await mongoose.connect(config.mongoUrl);
         console.log("Connection to DB Succed");
     } catch (error) {
         console.log("Error on connection to DB"+error);

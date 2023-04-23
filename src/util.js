@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
-import { PRIVATE_KEY } from './config.js';
+import config from './config/config';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +17,7 @@ export const isValidPassword = (user, password) => {
 
 //JSON Web Tokens JWT functinos:
 export const generateJwtToken = (user) => {
-    return jwt.sign({user}, PRIVATE_KEY, {expiresIn: '120s'});
+    return jwt.sign({user}, config.jwtPrivateKey, {expiresIn: '120s'});
 };
 
 export const authToken = (req, res, next) => {
@@ -26,7 +26,7 @@ export const authToken = (req, res, next) => {
     if (!cookieToken) return res.status(401).send({error: "Not authenticated"})
 
     const token = cookieToken.split(' ')[1]; //The split is made to remove the word Bearer
-    jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+    jwt.verify(token, config.jwtPrivateKey, (error, credentials) => {
         //jwt checks the existing token and checks if it is a valid token or altered one
         if (error) return res.status(403).send({ error: "Token invalid - Unauthorized" })
         // Token OK
