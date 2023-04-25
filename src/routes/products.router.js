@@ -1,7 +1,7 @@
 import { Router } from "express";
 //import of the service for Products. (You can change to file system by swapping the commented line)
-// import ProductManager from "../dao/fs/ProductManager.js";
-import ProductManager from "../dao/db/products.service.js";
+// import ProductManager from "../dao/services/fs/ProductManager.js";
+import ProductManager from "../dao/services/db/products.service.js";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
 //import of the service for Products. (You can change to file system by swapping the commented line)
-// import ProductManager from "../dao/fs/ProductManager.js";
-import ProductManager from "./dao/db/products.service.js";
-import MessageManager from "./dao/db/message.service.js"
+// import ProductManager from "../dao/services/fs/ProductManager.js";
+import ProductManager from "./dao/services/db/products.service.js";
+import MessageManager from "./dao/services/db/message.service.js"
 
 const productManager = new ProductManager();
 const messageManager = new MessageManager();

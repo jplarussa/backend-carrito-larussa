@@ -5,7 +5,7 @@ import ProductManager from "./ProductManager.js";
 
 class CartManager {
     constructor(filePath) {
-        this.filePath = path.join(__dirname, 'data', 'carts.json');
+        this.filePath = path.join(__dirname, 'files', 'carts.json');
         this.carts = [];
         this.nextId = 0;
     }

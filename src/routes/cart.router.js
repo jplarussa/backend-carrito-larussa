@@ -1,7 +1,7 @@
 import { Router} from "express";
 //import of the service for Carts. (You can change to file system by swapping the commented line)
-// import CartManager from "../dao/fs/CartManager.js";
-import CartManager from "../dao/db/carts.service.js";
+// import CartManager from "../dao/services/fs/CartManager.js";
+import CartManager from "../dao/services/db/carts.service.js";
 
 
 const router = Router();
