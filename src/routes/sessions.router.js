@@ -77,9 +77,18 @@ router.get("/githubcallback", passport.authenticate('github', { failureRedirect:
     req.session.user = {
         name: `${user.first_name} ${user.last_name}`,
         email: user.email,
-        age: user.age
+        age: user.age,
+        role: "admin"
     };
-    req.session.admin = true;
+
+    const access_token = generateJwtToken(req.session.user)
+    console.log(access_token);
+    
+    res.cookie('jwtCookieToken', access_token, {
+        maxAge: 180000,
+        httpOnly: true
+    });
+
     res.redirect("/github");
 });
 

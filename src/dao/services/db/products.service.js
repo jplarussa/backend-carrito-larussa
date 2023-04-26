@@ -1,4 +1,4 @@
-import { productsModel } from "../models/products.model.js"
+import { productsModel } from "../../models/products.model.js"
 
 export default class ProductManager {
 
@@ -18,8 +18,6 @@ export default class ProductManager {
             if (category || status) {
                 category ? filters.category = category : {}
                 status ? filters.status = status : {};
-/*                 filters.category = category ? category : {};
-                filters.status = status ? status : {}; */
             }
 
             options.limit = limit;
