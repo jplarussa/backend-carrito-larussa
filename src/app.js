@@ -22,7 +22,6 @@ import githubLoginRouter from './routes/github-login.views.router.js'
 
 
 //Declare Express server.
-const SERVER_PORT = 8080;
 const app = express();
 
 //Prepare server settings to receive JSON objects
