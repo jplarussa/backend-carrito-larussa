@@ -1,4 +1,84 @@
-import { Router } from 'express';
+
+
+export const register = async (req, res) => {
+    try {
+
+        res.send({message: "Product not found", payload: "register"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Product could not be loaded"});
+    }
+    
+}
+
+export const login = async (req, res) => {
+    try {
+
+        res.send({message: "Success productCreated.message", payload: "login"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Product could not be added"});
+    }
+    
+}
+
+export const getCurrent = async (req, res) => {
+    try {
+
+        res.send({message: "Success productUpdated.message", payload: "getCurrent"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Product could not be uploaded"});
+    }
+    
+}
+
+
+export const logout = async (req, res) => {
+    try {
+
+        res.send({message: "Success!", payload: "logout"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Product could not be deleted"});
+    }
+    
+}
+
+export const restorePass = async (req, res) => {
+    try {
+
+        res.send({message: "Success!", payload: "restorePass"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Password restored"});
+    }
+    
+}
+export const gitHubLogin = async (req, res) => {
+    try {
+
+        res.send({message: "Success!", payload: "gitHubCallBack"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Product could not be deleted"});
+    }
+    
+}
+export const gitHubCallback = async (req, res) => {
+    try {
+
+        res.send({message: "Success!", payload: "gitHubCallBack"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: error, message: "Product could not be deleted"});
+    }
+    
+}
+
+/* *******************************************************************************************
+******************************************************************************************* */
+
 import userModel from '../dao/models/user.model.js';
 import passport from 'passport';
 import { createHash, passportCall, publicRouteMiddleware, generateJwtToken, privateRouteMiddleware } from '../util.js';
@@ -91,5 +171,3 @@ router.get("/githubcallback", passport.authenticate('github', { failureRedirect:
 
     res.redirect("/github");
 });
-
-export default router;
