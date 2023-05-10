@@ -9,11 +9,12 @@ export default class CartManager {
     }
 
     async addProductToCart(cartId, productId) {
+
         const productManager = new ProductManager();
         const checkProduct = await productManager.getProductById(productId);
 
         if (!checkProduct) return null;
-
+        
         const cart = await cartsModel.findById(cartId);
 
         if (!cart) {
