@@ -16,7 +16,7 @@ export default class UserManager {
 
     async findOne(email) {
 
-        const result = await userModel.findOne({ _id: email });
+        const result = await userModel.findOne({email});
         return result;
     };
 

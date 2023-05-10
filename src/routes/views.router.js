@@ -3,8 +3,8 @@ import { Router } from "express";
 // import ProductManager from "../dao/fs/ProductManager.js";
 import ProductManager from "../dao/db/products.dao.js";
 import { io } from '../websocket.js'
-import { productsModel } from "../dao/models/products.model.js"
-import { cartsModel } from "../dao/models/carts.model.js"
+import { productsModel } from "../dao/db/models/products.model.js"
+import { cartsModel } from "../dao/db/models/carts.model.js"
 import { passportCall } from "../util.js";
 
 const router = Router();

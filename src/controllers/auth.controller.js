@@ -67,7 +67,7 @@ export const logout = async (req, res) => {
 export const restorePass = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await userManager.findOne({ email });
+        const user = await userManager.findOne( {email: email} );
 
         if (!user) {
             return res.status(401).json({ status: 'error', error: "Can't find user." });

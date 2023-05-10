@@ -1,4 +1,4 @@
-import ProductManager from "../dao/db/products.dao";
+import ProductManager from "../dao/db/products.dao.js";
 
 const productsService = new ProductManager();
 
