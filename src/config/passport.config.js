@@ -22,6 +22,7 @@ const initializePassport = () => {
                 try {
     
                     const userExists = await userModel.findOne({ email: username });
+                    
                     if (userExists) {
                         console.log("User already exist.");
                         return done(null, false,{messages:'User already exist.'});

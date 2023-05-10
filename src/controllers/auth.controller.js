@@ -1,169 +1,109 @@
+import passport from 'passport';
+import { createHash, isValidPassword, generateJwtToken } from '../util.js';
+import { passportCall } from '../util.js';
+import UserManager from '../dao/db/user.dao.js';
 
+const userManager = new UserManager();
 
-export const register = async (req, res) => {
+export const register = passportCall('register', async (req, res, next) => {
     try {
-
-        res.send({message: "Product not found", payload: "register"});
+        return res.status(201).json({
+            message: 'Success',
+            redirectUrl: '/users/login'
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).send({error: error, message: "Product could not be loaded"});
+        return res.status(500).json({ error: error.message, message: 'Error registering user' });
     }
-    
-}
+});
 
-export const login = async (req, res) => {
+
+export const login = passportCall('login', async (req, res, next) => {
     try {
 
-        res.send({message: "Success productCreated.message", payload: "login"});
+        const user = req.user;
+
+        const tokenUser = {
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            age: user.age,
+            role: user.role
+        };
+
+        const access_token = generateJwtToken(tokenUser);
+        res.cookie('jwtCookieToken', access_token, {
+            maxAge: 180000,
+            httpOnly: true
+        });
+        return res.redirect('/products');
+
     } catch (error) {
         console.error(error);
-        res.status(500).send({error: error, message: "Product could not be added"});
+        res.status(500).send({ error: error, message: "Error login user." });
     }
-    
-}
+});
+
 
 export const getCurrent = async (req, res) => {
     try {
 
-        res.send({message: "Success productUpdated.message", payload: "getCurrent"});
+        res.json({ payload: req.user });
     } catch (error) {
         console.error(error);
-        res.status(500).send({error: error, message: "Product could not be uploaded"});
+        res.status(500).send({ error: error, message: "Can't get current user" });
     }
-    
+
 }
 
 
 export const logout = async (req, res) => {
-    try {
-
-        res.send({message: "Success!", payload: "logout"});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({error: error, message: "Product could not be deleted"});
-    }
-    
-}
-
-export const restorePass = async (req, res) => {
-    try {
-
-        res.send({message: "Success!", payload: "restorePass"});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({error: error, message: "Password restored"});
-    }
-    
-}
-export const gitHubLogin = async (req, res) => {
-    try {
-
-        res.send({message: "Success!", payload: "gitHubCallBack"});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({error: error, message: "Product could not be deleted"});
-    }
-    
-}
-export const gitHubCallback = async (req, res) => {
-    try {
-
-        res.send({message: "Success!", payload: "gitHubCallBack"});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({error: error, message: "Product could not be deleted"});
-    }
-    
-}
-
-/* *******************************************************************************************
-******************************************************************************************* */
-
-import userModel from '../dao/models/user.model.js';
-import passport from 'passport';
-import { createHash, passportCall, publicRouteMiddleware, generateJwtToken, privateRouteMiddleware } from '../util.js';
-
-const router = Router();
-
-router.post('/register', publicRouteMiddleware, passportCall('register'), async (req, res) => {
-    res.status(201).json({
-        status: "success",
-        redirectUrl: '/users/login'
-    });
-})
-
-router.post('/login', publicRouteMiddleware, passportCall('login'), async (req, res) => {
-
-    const user = req.user;
-    const tokenUser = {
-        name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-        age: user.age,
-        role: user.role
-    }
-
-    const access_token = generateJwtToken(tokenUser)
-    console.log(access_token);
-    
-    res.cookie('jwtCookieToken', access_token, {
-        maxAge: 180000,
-        httpOnly: true
-    });
-
-    res.redirect('/products')
-})
-
-router.get('/current', passportCall('jwt'), async (req, res) => {
-
-    console.log("User loggued: ");
-    console.log(req.user);
-
-    res.json({ payload: req.user });
-
-})
-
-router.post('/logout', (req, res) => {
     req.session.destroy();
     res.clearCookie('jwtCookieToken');
     res.redirect('/users/login');
     console.log("User logout");
-});
+    res.send({ message: "Success!", payload: "logout" });
+}
 
-router.post('/restore', publicRouteMiddleware, async (req, res) => {
+export const restorePass = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await userManager.findOne({ email });
 
-    const { email, password } = req.body;
-    const user = await userModel.findOne({ email: email },);
+        if (!user) {
+            return res.status(401).json({ status: 'error', error: "Can't find user." });
+        }
 
-    if (!user) {
-        return res.status(401).send({ status: "error", error: "Can't find user." });
+        const newUser = {
+            email: email,
+            password: createHash(password)
+        }
+
+        const result = await userManager.updateOne({ email: email }, newUser);
+
+        res.status(200).json({ status: "success", message: `Password restored` })
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error, message: 'Password could not be restored' });
     }
 
-    const newUser = {
-        email: email,
-        password: createHash(password)
-    }
-    console.log("NEWUSER: " + newUser);
+}
 
-    const result = await userModel.updateOne({ email: email }, newUser);
+export const gitHubLogin = passport.authenticate('github', { scope: ['user:email'] });
 
-    res.status(200).send({ status: "success", message: `Password restored` })
-
-})
-
-router.get("/github", passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { });
-
-router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/github/error' }), async (req, res) => {
+export const gitHubCallback = passport.authenticate('github', { failureRedirect: '/github/error' }, async (req, res) => {
     const user = req.user;
-    req.session.user = {
+
+    tokenUser = {
         name: `${user.first_name} ${user.last_name}`,
         email: user.email,
         age: user.age,
         role: "admin"
     };
 
-    const access_token = generateJwtToken(req.session.user)
+    const access_token = generateJwtToken(tokenUser);
     console.log(access_token);
-    
+
     res.cookie('jwtCookieToken', access_token, {
         maxAge: 180000,
         httpOnly: true

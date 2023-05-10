@@ -1,16 +1,27 @@
-import {userModel} from "./models/user.model.js";
+import { userModel } from "./models/user.model.js";
 
 export default class UserManager {
 
     async createUser(user) {
-        try {
-            const newUser = new userModel(user);
-            const savedUser = await newUser.save();
-            return savedUser;
-          } catch (error) {
-            throw new Error('Error creating user.');
-          }
-      };
 
+        const newUser = await userModel.create(user);
+        return newUser;
+    };
 
+    async getAll() {
+
+        const users = await userModel.find();
+        return users.map(user => user.toObject());
+    };
+
+    async findOne(email) {
+
+        const result = await userModel.findOne({ _id: email });
+        return result;
+    };
+
+    async updateUser(userId, userToReplace) {
+        const result = await userModel.updateOne({ _id: userId }, userToReplace);
+        return result;
+    }
 }
