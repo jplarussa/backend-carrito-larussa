@@ -23,7 +23,7 @@ const initializePassport = () => {
 
                 try {
     
-                    const userExists = await userManager.findOne({ email: username });
+                    const userExists = await userManager.findOne(username);
 
                     if (userExists) {
                         console.log("User already exist.");
@@ -42,7 +42,7 @@ const initializePassport = () => {
                         user.role = 'admin';
                     }
     
-                    const result = await userManager.create(user);
+                    const result = await userManager.createUser(user);
 
                     return done(null, result,{messages:`User created successfully, ID: ${result.id}`});
     
@@ -57,7 +57,7 @@ const initializePassport = () => {
 
                 try {
 
-                    const user = await userManager.findOne({ email: username });
+                    const user = await userManager.findOne(username);
                     console.log("User finded for login:");
                     console.log(user);
     

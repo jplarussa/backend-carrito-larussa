@@ -35,7 +35,7 @@ export const login = passportCall('login', async (req, res, next) => {
             maxAge: 180000,
             httpOnly: true
         });
-        return res.redirect('/products');
+        return res.status(200).redirect('/products');
 
     } catch (error) {
         console.error(error);
