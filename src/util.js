@@ -70,7 +70,7 @@ export const passportCall = (strategy) => {
             if (!user) {
                 return res.status(401).send({error: info.messages?info.messages:info.toString()});
             }
-            console.log("Message from passport: " + info.messages?info.messages:info.messages.toString());
+            console.log("Message from passport: " + (info.messages ? info.messages : info.messages.toString()));
             console.log("User obtained from the strategy: ");
             console.log(user);
             req.user = user;

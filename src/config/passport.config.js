@@ -15,72 +15,75 @@ const ExtractJWT = jwtStrategy.ExtractJwt;
 
 const initializePassport = () => {
 
-        passport.use('register', new LocalStrategy(
-            { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
-    
-                const { first_name, last_name, age } = req.body;
-                console.log("Registering user: " + JSON.stringify(req.body));
+    passport.use('register', new LocalStrategy(
+        { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
 
-                try {
-    
-                    const userExists = await userManager.findOne(username);
+            const { first_name, last_name, age } = req.body;
+            console.log("Registering user: " + JSON.stringify(req.body));
 
-                    if (userExists) {
-                        console.log("User already exist.");
-                        return done(null, false,{messages:'User already exist.'});
-                    }
-    
-                    const user = {
-                        first_name,
-                        last_name,
-                        email: username,
-                        age,
-                        password: createHash(password),
-                    }
+            try {
+                console.log("PASSPORT PARAM USERNAME: " + username);
+                console.log("PASSPORT PARAM PASS: " + password);
+                console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: " + createHash(password));
 
-                    if (user.email === config.adminName && password === config.adminPassword) {
-                        user.role = 'admin';
-                    }
+                const userExists = await userManager.findOne(username);
 
-                    const result = await userManager.createUser(user);
-
-                    return done(null, result,{messages:`User created successfully, ID: ${result.id}`});
-    
-                } catch (error) {
-                    return done("Error getting user: " + error)
+                if (userExists) {
+                    console.log("User already exist.");
+                    return done(null, false, { messages: 'User already exist.' });
                 }
+
+                const user = {
+                    first_name,
+                    last_name,
+                    email: username,
+                    age,
+                    password: createHash(password),
+                }
+
+                if (user.email === config.adminName && password === config.adminPassword) {
+                    user.role = 'admin';
+                }
+
+                const result = await userManager.createUser(user);
+
+                return done(null, result, { messages: `User created successfully, ID: ${result.id}` });
+
+            } catch (error) {
+                return done("Error getting user: " + error)
             }
-        ))
-            
-        passport.use('login', new LocalStrategy(
-            { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
+        }
+    ))
 
-                try {
+    passport.use('login', new LocalStrategy(
+        { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
 
-                    const user = await userManager.findOne(username);
-                    console.log("User finded for login:");
-                    console.log(user);
-                    console.log("PASSPORT PARAM USERNAME: "+username);
-                    console.log("PASSPORT PARAM PASS: "+password);
-                    console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: "+createHash(password));
-                    console.log("user.pass DE DB: "+user.password);
-                    if (!user) {
-                        console.warn("User doesn't exists with username: " + username);
-                        return done(null, false,{messages:"Invalid credentials."});
-                    }
-                    if (!isValidPassword(user, password)) {
-                        console.warn("Invalid credentials for user: " + username);
-                        return done(null, false,{messages:"Invalid credentials."});
-                    }
-                    console.log("llegue4");
-                    return done(null, user,{messages:"Login Success."});
-    
-                } catch (error) {x
-                    return done(error);
+            try {
+
+                const user = await userManager.findOne(username);
+                console.log("User finded for login:");
+                console.log(user);
+                console.log("PASSPORT PARAM USERNAME: " + username);
+                console.log("PASSPORT PARAM PASS: " + password);
+                console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: " + createHash(password));
+                console.log("user.pass DE DB: " + user.password);
+                if (!user) {
+                    console.warn("User doesn't exists with username: " + username);
+                    return done(null, false, { messages: "Invalid credentials." });
                 }
-            })
-        );
-    
+                if (!isValidPassword(user, password)) {
+                    console.warn("Invalid credentials for user: " + username);
+                    return done(null, false, { messages: "Invalid credentials." });
+                }
+                console.log("llegue4");
+                return done(null, user, { messages: "Login Success." });
+
+            } catch (error) {
+                return done(error);
+            }
+        })
+    );
+
     //Strategy to get JWT Token by Cookie:
     passport.use('jwt', new JwtStrategy(
         {
@@ -109,6 +112,7 @@ const initializePassport = () => {
             clientID: config.GHclientID,
             clientSecret: config.GHClientSecret,
             callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
+            // scope: ['user:email']
         },
         async (accessToken, refreshToken, profile, done) => {
             console.log("Profile obtained from user: ");
