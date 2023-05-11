@@ -108,7 +108,7 @@ const initializePassport = () => {
         {
             clientID: config.GHclientID,
             clientSecret: config.GHClientSecret,
-            callbackUrl: 'http://localhost:8080/api/sessions/githubcallback'
+            callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
         },
         async (accessToken, refreshToken, profile, done) => {
             console.log("Profile obtained from user: ");

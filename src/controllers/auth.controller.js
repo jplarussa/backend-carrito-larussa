@@ -95,14 +95,14 @@ export const gitHubCallback = passport.authenticate('github', { failureRedirect:
     console.log("REQ GITH "+req+" USER "+req.user);
     const user = req.user;
 
-    tokenUser = {
+    req.session.user = {
         name: `${user.first_name} ${user.last_name}`,
         email: user.email,
         age: user.age,
         role: "admin"
     };
 
-    const access_token = generateJwtToken(tokenUser);
+    const access_token = generateJwtToken(req.session.user);
     console.log(access_token);
 
     res.cookie('jwtCookieToken', access_token, {
