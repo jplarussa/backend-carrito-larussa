@@ -11,7 +11,10 @@ const __dirname = dirname(__filename);
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
 export const isValidPassword = (user, password) => {
-    console.log(`Validete data: user-password: ${user.password}, password: ${password}`);
+    console.log("USER PARAM EN VALID: "+user);
+    console.log("USER.PASS EN VALID: "+user.password);
+    console.log("PASSWORD PARAM EN VALID: "+password);
+    console.log(`Validate data: user-password: ${user.password}, password: ${password}`);
     return bcrypt.compareSync(password, user.password);
 }
 
@@ -62,12 +65,12 @@ export const passportCall = (strategy) => {
         console.log(strategy);
 
         passport.authenticate(strategy, function (err, user, info) {
-
+            
             if (err) return next(err);
             if (!user) {
                 return res.status(401).send({error: info.messages?info.messages:info.toString()});
             }
-            
+            console.log("Message from passport: " + info.messages?info.messages:info.messages.toString());
             console.log("User obtained from the strategy: ");
             console.log(user);
             req.user = user;

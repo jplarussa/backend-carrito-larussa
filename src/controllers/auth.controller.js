@@ -7,13 +7,13 @@ const userManager = new UserManager();
 
 export const register = passportCall('register', async (req, res, next) => {
     try {
-        return res.status(201).json({
+        res.status(201).json({
             message: 'Success',
             redirectUrl: '/users/login'
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: error.message, message: 'Error registering user' });
+        res.status(500).json({ error: error.message, message: 'Error registering user' });
     }
 });
 
@@ -67,7 +67,7 @@ export const logout = async (req, res) => {
 export const restorePass = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await userManager.findOne( {email: email} );
+        const user = await userManager.findOne(email);
 
         if (!user) {
             return res.status(401).json({ status: 'error', error: "Can't find user." });
@@ -78,7 +78,7 @@ export const restorePass = async (req, res) => {
             password: createHash(password)
         }
 
-        const result = await userManager.updateOne({ email: email }, newUser);
+        const result = await userManager.updateUser({ email: email }, newUser);
 
         res.status(200).json({ status: "success", message: `Password restored` })
 
@@ -92,6 +92,7 @@ export const restorePass = async (req, res) => {
 export const gitHubLogin = passport.authenticate('github', { scope: ['user:email'] });
 
 export const gitHubCallback = passport.authenticate('github', { failureRedirect: '/github/error' }, async (req, res) => {
+    console.log("REQ GITH "+req+" USER "+req.user);
     const user = req.user;
 
     tokenUser = {

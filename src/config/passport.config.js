@@ -41,7 +41,7 @@ const initializePassport = () => {
                     if (user.email === config.adminName && password === config.adminPassword) {
                         user.role = 'admin';
                     }
-    
+
                     const result = await userManager.createUser(user);
 
                     return done(null, result,{messages:`User created successfully, ID: ${result.id}`});
@@ -51,7 +51,7 @@ const initializePassport = () => {
                 }
             }
         ))
-    
+            
         passport.use('login', new LocalStrategy(
             { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
 
@@ -60,7 +60,10 @@ const initializePassport = () => {
                     const user = await userManager.findOne(username);
                     console.log("User finded for login:");
                     console.log(user);
-    
+                    console.log("PASSPORT PARAM USERNAME: "+username);
+                    console.log("PASSPORT PARAM PASS: "+password);
+                    console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: "+createHash(password));
+                    console.log("user.pass DE DB: "+user.password);
                     if (!user) {
                         console.warn("User doesn't exists with username: " + username);
                         return done(null, false,{messages:"Invalid credentials."});
@@ -69,10 +72,10 @@ const initializePassport = () => {
                         console.warn("Invalid credentials for user: " + username);
                         return done(null, false,{messages:"Invalid credentials."});
                     }
+                    console.log("llegue4");
+                    return done(null, user,{messages:"Login Success."});
     
-                    return done(null, user);
-    
-                } catch (error) {
+                } catch (error) {x
                     return done(error);
                 }
             })
@@ -129,7 +132,7 @@ const initializePassport = () => {
                         loggedBy: "GitHub"
                     };
 
-                    const result = await userManager.create(newUser);
+                    const result = await userManager.createUser(newUser);
                     return done(null, result);
 
                 } else {

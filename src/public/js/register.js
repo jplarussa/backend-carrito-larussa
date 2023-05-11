@@ -21,7 +21,7 @@ form.addEventListener('submit', e => {
         }
     })
     .then(data => {
-        if (data.status === "success") {
+        if (data.message === "success") {
             alert("User created successfully")
             window.location.href = data.redirectUrl;
         } else {
