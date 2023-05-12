@@ -60,9 +60,6 @@ const initializePassport = () => {
                 const user = await userManager.findOne(username);
                 console.log("User finded for login:");
                 console.log(user);
-                console.log("PASSPORT PARAM USERNAME: " + username);
-                console.log("PASSPORT PARAM PASS: " + password);
-                console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: " + createHash(password));
 
                 if (!user) {
                     console.warn("User doesn't exists with username: " + username);
@@ -72,7 +69,7 @@ const initializePassport = () => {
                     console.warn("Invalid credentials for user: " + username);
                     return done(null, false, { messages: "Invalid credentials." });
                 }
-                console.log("llegue4");
+
                 return done(null, user, { messages: "Login Success." });
 
             } catch (error) {
@@ -168,12 +165,12 @@ const initializePassport = () => {
   */
 const cookieExtractor = req => {
     let token = null;
-    console.log("Entrando a Cookie Extractor");
+    console.log("Entering Cookie Extractor");
     if (req && req.cookies) { //Validate that the request and cookies exist.
         console.log("Cookies presentes: ");
         console.log(req.cookies);
         token = req.cookies['jwtCookieToken']; //-> Keep in mind this name is that of the Cookie.
-        console.log("Token obtenido desde Cookie:");
+        console.log("Token obtained from Cookie:");
         console.log(token);
     }
     return token;

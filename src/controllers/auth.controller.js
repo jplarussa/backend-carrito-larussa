@@ -93,7 +93,7 @@ export const restorePass = async (req, res) => {
 // export const gitHubLogin = passport.authenticate('github', { scope: ['user:email'] });
 
 export const gitHubCallback  = async (req, res) => {
-    console.log("REQ GITH "+req+" USER "+req.user);
+
     const user = req.user;
 
     req.session.user = {
