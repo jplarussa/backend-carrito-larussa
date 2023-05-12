@@ -67,6 +67,7 @@ export const restorePass = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await userManager.findOne(email);
+        console.log("Restoring pass for: " + email);
 
         if (!user) {
             return res.status(401).json({ status: 'error', error: "Can't find user." });
@@ -79,6 +80,7 @@ export const restorePass = async (req, res) => {
 
         const result = await userManager.updateUser({ email: email }, newUser);
 
+        console.log("Password restored");
         res.status(200).json({ status: "success", message: `Password restored` })
 
     } catch (error) {
@@ -88,9 +90,9 @@ export const restorePass = async (req, res) => {
 
 }
 
-export const gitHubLogin = passport.authenticate('github', { scope: ['user:email'] });
+// export const gitHubLogin = passport.authenticate('github', { scope: ['user:email'] });
 
-export const gitHubCallback = passport.authenticate('github', { failureRedirect: '/github/error' }, async (req, res) => {
+export const gitHubCallback  = async (req, res) => {
     console.log("REQ GITH "+req+" USER "+req.user);
     const user = req.user;
 
@@ -105,9 +107,9 @@ export const gitHubCallback = passport.authenticate('github', { failureRedirect:
     console.log(access_token);
 
     res.cookie('jwtCookieToken', access_token, {
-        maxAge: 180000,
+        maxAge: 900000,
         httpOnly: true
     });
 
     res.redirect("/github");
-});
+};
