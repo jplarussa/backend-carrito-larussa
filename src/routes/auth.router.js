@@ -9,7 +9,7 @@ router.post("/login", passportCall('login'), login);
 router.get("/github", passportCall('github', { scope: ['user:email'] }));
 router.get("/githubcallback", passportCall('github', { failureRedirect: '/github/error' }), gitHubCallback);
 
-router.get("/current", getCurrent)  
+router.get("/current", passportCall('jwt'), getCurrent)  
 router.post("/logout", logout);
 router.post("/restore", restorePass);
 
