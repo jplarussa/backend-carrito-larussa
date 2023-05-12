@@ -20,7 +20,7 @@ export const isValidPassword = (user, password) => {
 
 //JSON Web Tokens JWT functinos:
 export const generateJwtToken = (user) => {
-    return jwt.sign({user}, config.jwtPrivateKey, {expiresIn: '120s'});
+    return jwt.sign({user}, config.jwtPrivateKey, {expiresIn: '15m'});
 };
 
 export const authToken = (req, res, next) => {
