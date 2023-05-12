@@ -22,9 +22,6 @@ const initializePassport = () => {
             console.log("Registering user: " + JSON.stringify(req.body));
 
             try {
-                console.log("PASSPORT PARAM USERNAME: " + username);
-                console.log("PASSPORT PARAM PASS: " + password);
-                console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: " + createHash(password));
 
                 const userExists = await userManager.findOne(username);
 
@@ -66,7 +63,7 @@ const initializePassport = () => {
                 console.log("PASSPORT PARAM USERNAME: " + username);
                 console.log("PASSPORT PARAM PASS: " + password);
                 console.log("SI HASHEO EL PASS PARAMETRO PASSPORT: " + createHash(password));
-                console.log("user.pass DE DB: " + user.password);
+
                 if (!user) {
                     console.warn("User doesn't exists with username: " + username);
                     return done(null, false, { messages: "Invalid credentials." });

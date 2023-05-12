@@ -1,12 +1,12 @@
 import passport from 'passport';
 import { createHash, isValidPassword, generateJwtToken } from '../util.js';
-import { passportCall } from '../util.js';
 import UserManager from '../dao/db/user.dao.js';
 
 const userManager = new UserManager();
 
-export const register = passportCall('register', async (req, res, next) => {
+export const register = async (req, res) => {
     try {
+        console.log(req.user);
         res.status(201).json({
             message: 'Success',
             redirectUrl: '/users/login'
@@ -15,10 +15,10 @@ export const register = passportCall('register', async (req, res, next) => {
         console.error(error);
         res.status(500).json({ error: error.message, message: 'Error registering user' });
     }
-});
+};
 
 
-export const login = passportCall('login', async (req, res, next) => {
+export const login = async (req, res) => {
     try {
 
         const user = req.user;
@@ -32,7 +32,7 @@ export const login = passportCall('login', async (req, res, next) => {
 
         const access_token = generateJwtToken(tokenUser);
         res.cookie('jwtCookieToken', access_token, {
-            maxAge: 180000,
+            maxAge: 900000,
             httpOnly: true
         });
         res.status(200).json({success: true, redirectUrl: '/products' });
@@ -41,7 +41,7 @@ export const login = passportCall('login', async (req, res, next) => {
         console.error(error);
         res.status(500).json({ error: error, message: "Error login user." });
     }
-});
+};
 
 
 export const getCurrent = async (req, res) => {
@@ -59,9 +59,8 @@ export const getCurrent = async (req, res) => {
 export const logout = async (req, res) => {
     req.session.destroy();
     res.clearCookie('jwtCookieToken');
-    res.redirect('/users/login');
     console.log("User logout");
-    res.send({ message: "Success!", payload: "logout" });
+    res.redirect('/users/login');
 }
 
 export const restorePass = async (req, res) => {
