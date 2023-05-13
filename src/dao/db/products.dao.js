@@ -31,7 +31,7 @@ export default class ProductManager {
         return await productsModel.findById(productId);
     }
 
-    async addProduct(newproduct) {
+    async createProduct(newproduct) {
         return await productsModel.create(newproduct);
     }
 

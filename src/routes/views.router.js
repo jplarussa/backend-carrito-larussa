@@ -87,7 +87,7 @@ router.get('/realtimeproducts', async (req, res) => {
 router.post('/realtimeproducts', async (req, res) => {
     try {
         let newProduct = req.body;
-        let productCreated = await productManager.addProduct(newProduct);
+        let productCreated = await productManager.createProduct(newProduct);
 
         if (productCreated.success) {
             io.emit("update-products", await productManager.getProducts());

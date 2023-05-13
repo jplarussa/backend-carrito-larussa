@@ -1,6 +1,6 @@
 import ProductManager from "../dao/db/products.dao.js";
 
-const productsService = new ProductManager();
+const productManager = new ProductManager();
 
 export const getProducts = async (req, res) => {
     try {
@@ -25,7 +25,7 @@ export const getProducts = async (req, res) => {
             options.sort = { price: sort };
         }
 
-        const products = await productsService.getProducts(filters, options);
+        const products = await productManager.getProducts(filters, options);
         
         res.status(200).send({message: "Success!", payload: products});
 
@@ -39,7 +39,7 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
     try {
         const productId = req.params.pid;
-        const product = await productsService.getProductById(productId);
+        const product = await productManager.getProductById(productId);
 
         if (!product) {
             res.status(404).send({ message: "Product not found" });
@@ -55,10 +55,10 @@ export const getProductById = async (req, res) => {
     
 }
 
-export const addProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
     try {
         let newProduct = req.body;
-        let productCreated = await productsService.addProduct(newProduct);
+        let productCreated = await productManager.createProduct(newProduct);
 
         res.status(201).send(productCreated);
 
@@ -75,7 +75,7 @@ export const updateProduct = async (req, res) => {
         const productId = req.params.pid;
         const productFields = req.body;
 
-        let productUpdated = await productsService.updateProduct(productId, productFields);
+        let productUpdated = await productManager.updateProduct(productId, productFields);
 
         res.send(productUpdated);
         
@@ -92,7 +92,7 @@ export const deleteProduct = async (req, res) => {
 
         const productId = req.params.pid;
 
-        let productDeleted = await productsService.deleteProduct(productId)
+        let productDeleted = await productManager.deleteProduct(productId)
 
         res.status(201).send(productDeleted);
 
