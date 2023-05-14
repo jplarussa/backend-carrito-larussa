@@ -10,7 +10,7 @@ export const getProducts = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: error, message: "Error loading the products."});
+        res.status(500).json({error: error.message});
     }
     
 }
@@ -20,16 +20,11 @@ export const getProductById = async (req, res) => {
         const productId = req.params.pid;
         const product = await productsService.getProductById(productId);
 
-        if (!product) {
-            res.status(404).send({ message: "Product not found" });
-            return;
-        }
-        
-        res.status(200).send(product);
+        res.status(200).json(product);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send({error: error, message: "Product could not be loaded"});
+        res.status(400).json({ error: error.message });;
     }
     
 }
@@ -39,11 +34,11 @@ export const createProduct = async (req, res) => {
         let newProduct = req.body;
         let productCreated = await productsService.createProduct(newProduct);
 
-        res.status(201).send(productCreated);
+        res.status(200).json(productCreated);
 
     } catch (error) {
         console.error(error);   
-        res.status(500).send({error: error, message: "Error saving product."});
+        res.status(400).json({ error: error.message });
     }
     
 }

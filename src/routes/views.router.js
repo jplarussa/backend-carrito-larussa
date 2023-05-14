@@ -51,11 +51,7 @@ router.get('/products', passportCall('jwt'), async (req, res) => {
     console.log(req.user);
 
     try {
-        console.log("REQ QUERY");
-        console.log(req.query);
-        console.log("FILTERS Y OPTIONS: ");
-        console.log(filters);
-        console.log(options);
+
         const products = await productsModel.paginate(filters, options);
         console.log(products);
 
