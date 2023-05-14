@@ -69,15 +69,9 @@ router.get('/products', passportCall('jwt'), async (req, res) => {
         }
 
         res.render("products", {
-            products: products.docs,
-            currentPage: page,
-            totalPages: products.totalPages,
-            hasPrevPage: products.hasPrevPage,
-            hasNextPage: products.hasNextPage,
-            prevPage: products.prevPage,
-            nextPage: products.nextPage,
-            user: user,
-            admin: admin
+            products,
+            user,
+            admin
         });
 
     } catch (error) {

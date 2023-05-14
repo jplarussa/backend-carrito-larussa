@@ -56,7 +56,7 @@
     <div class="col-md-10">
       <h1 class="text-center py-5 text-primary">Products</h1>
       <div class="row" id="product-list">
-        {{#each products}}
+        {{#each products.docs}}
         <div class="col-md-4 mb-4">
           <div class="card">
             <img src="{{this.thumbnail}}" class="card-img-top" alt="{{this.title}}">
@@ -71,15 +71,15 @@
         </div>
         {{/each}}
       </div>
-      {{#if totalPages}}
+      {{#if products.totalPages}}
       <div>
-        <p>Page {{currentPage}} of {{totalPages}}</p>
+        <p>Page {{products.currentPage}} of {{products.totalPages}}</p>
         <div>
-          {{#if hasPrevPage}}
-          <a href="/products?page={{prevPage}}">&lt; Previous</a>
+          {{#if products.hasPrevPage}}
+          <a href="#" onclick="goToPage('{{products.prevPage}}', event)">&lt; Previous</a>
           {{/if}}
-          {{#if hasNextPage}}
-          <a href="/products?page={{nextPage}}">Next &gt;</a>
+          {{#if products.hasNextPage}}
+          <a href="#" onclick="goToPage('{{products.nextPage}}', event)">Next &gt;</a>
           {{/if}}
         </div>
       </div>
@@ -90,6 +90,28 @@
   </div>
 </div>
 <script>
+
+  function goToPage(page, event) {
+    event.preventDefault();
+
+    const currentUrl = window.location.href;
+    const currentSearchParams = new URLSearchParams(window.location.search);
+    const queryParams = new URLSearchParams();
+
+    currentSearchParams.forEach((value, key) => {
+      queryParams.set(key, value);
+    });
+
+    if (page) {
+      queryParams.set('page', page);
+    }
+
+    const baseUrl = currentUrl.split('?')[0];
+    const newUrl = baseUrl + '?' + queryParams.toString();
+
+    window.location.href = newUrl;
+  }
+
   function addToCart(productId) {
     fetch(`/api/carts/641bdada984cb1cc66e9fc8f/product/${productId}`, {
       method: 'POST',

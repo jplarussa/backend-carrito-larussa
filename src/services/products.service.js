@@ -9,7 +9,7 @@ export default class ProductsService {
         let limit = parameters.limit ? parseInt(parameters.limit) : 10;
         let page = parameters.page ? parseInt(parameters.page) : 1;
         let category = parameters.category ? parameters.category.toLowerCase() : null;
-        let status = req.query.status === 'true' ? true : req.query.status === 'false' ? false : undefined;
+        let status = parameters.status === 'true' ? true : parameters.status === 'false' ? false : undefined;
         let sort = parameters.sort ? (parameters.sort === "asc" ? 1 : parameters.sort === "desc" ? -1 : null) : null;
 
         const filters = {};

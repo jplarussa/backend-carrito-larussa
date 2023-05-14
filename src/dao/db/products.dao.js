@@ -5,26 +5,7 @@ export default class ProductDao {
     async getProducts(filters, options) {
 
         const products = await productsModel.paginate(filters, options);
-
-        if (products.totalDocs > 0) {
-            let response = {
-                status: "success",
-                payload: products.docs,
-                totalPages: products.totalPages,
-                prevPage: products.prevPage,
-                nextPage: products.nextPage,
-                page: products.page,
-                hasPrevPage: products.hasPrevPage,
-                hasNextPage: products.hasNextPage,
-                prevLink: "",
-                nextLink: "",
-            }
-
-            return response;
-            
-        } else {
-            return null
-        }
+        return products;
     }
 
     async getProductById(productId) {
