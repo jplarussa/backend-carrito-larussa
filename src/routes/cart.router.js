@@ -11,6 +11,6 @@ router.delete('/:cid/products/:pid', deleteProductFromCart);
 router.put('/:cid', updateCart);
 router.put('/:cid/products/:pid', updateProductQuantityInCart);
 router.delete('/:cid', emptyCart);
-router.post('/:cid/purchase', purchaseCart);
+// router.post('/:cid/purchase', purchaseCart);
 
 export default router;

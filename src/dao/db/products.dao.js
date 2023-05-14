@@ -1,6 +1,6 @@
 import { productsModel } from "./models/products.model.js"
 
-export default class ProductManager {
+export default class ProductDao {
 
     async getProducts(filters, options) {
 

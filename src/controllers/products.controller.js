@@ -1,37 +1,16 @@
-import ProductManager from "../dao/db/products.dao.js";
+import ProductsService from "../services/products.service.js";
 
-const productManager = new ProductManager();
+const productsService = new ProductsService();
 
 export const getProducts = async (req, res) => {
     try {
 
-        let limit = req.limit ? parseInt(req.limit) : 10;
-        let page = req.page ? parseInt(req.page) : 1;
-        let category = req.category ? req.category.toLowerCase() : null;
-        let status = req.status ? (req.status.toLowerCase() === "true" ? true : req.status.toLowerCase() === "false" ? false : null) : null;
-        let sort = req.sort ? (req.sort === "asc" ? 1 : req.sort === "desc" ? -1 : null) : null;
-        
-        const filters = {};
-        const options = {};
-
-        if (category || status) {
-            category ? filters.category = category : {}
-            status ? filters.status = status : {};
-        }
-
-        options.limit = limit;
-        options.page = page;
-        if (sort !== null) {
-            options.sort = { price: sort };
-        }
-
-        const products = await productManager.getProducts(filters, options);
-        
-        res.status(200).send({message: "Success!", payload: products});
+        const products = await productsService.getProducts(req.query);        
+        res.status(200).json(products);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send({error: error, message: "Error loading the products."});
+        res.status(500).json({error: error, message: "Error loading the products."});
     }
     
 }
@@ -39,7 +18,7 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
     try {
         const productId = req.params.pid;
-        const product = await productManager.getProductById(productId);
+        const product = await productsService.getProductById(productId);
 
         if (!product) {
             res.status(404).send({ message: "Product not found" });
@@ -58,7 +37,7 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
     try {
         let newProduct = req.body;
-        let productCreated = await productManager.createProduct(newProduct);
+        let productCreated = await productsService.createProduct(newProduct);
 
         res.status(201).send(productCreated);
 
@@ -75,7 +54,7 @@ export const updateProduct = async (req, res) => {
         const productId = req.params.pid;
         const productFields = req.body;
 
-        let productUpdated = await productManager.updateProduct(productId, productFields);
+        let productUpdated = await productsService.updateProduct(productId, productFields);
 
         res.send(productUpdated);
         
@@ -92,7 +71,7 @@ export const deleteProduct = async (req, res) => {
 
         const productId = req.params.pid;
 
-        let productDeleted = await productManager.deleteProduct(productId)
+        let productDeleted = await productsService.deleteProduct(productId)
 
         res.status(201).send(productDeleted);
 

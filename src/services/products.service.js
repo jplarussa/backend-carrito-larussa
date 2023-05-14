@@ -1,63 +1,70 @@
-import ProductManager from "../dao/db/products.dao";
+import ProductDao from "../dao/db/products.dao.js";
 
-class ProductValidator{
-    
-    async getProducts({page, limit, sort, category, status}){
-        const sortValidValues = [-1, 1, '-1', '1']
-        let query = {};
-        
-        if(category || status){
-            query = {category} || {status}
+const productDao = new ProductDao();
+
+export default class ProductsService {
+
+    async getProducts(parameters) {
+
+        let limit = parameters.limit ? parseInt(parameters.limit) : 10;
+        let page = parameters.page ? parseInt(parameters.page) : 1;
+        let category = parameters.category ? parameters.category.toLowerCase() : null;
+        let status = req.query.status === 'true' ? true : req.query.status === 'false' ? false : undefined;
+        let sort = parameters.sort ? (parameters.sort === "asc" ? 1 : parameters.sort === "desc" ? -1 : null) : null;
+
+        const filters = {};
+        const options = {};
+
+        if (category || status !== undefined) {
+            if (category) {
+                filters.category = category;
+            }
+            if (status !== undefined) {
+                filters.status = status;
+            }
         }
 
-        if(limit) if(isNaN(limit)) throw new Error('Limit must be a number over 0');
-
-        if(page) if(isNaN(page) || page <= 0) throw new Error('Page must be a number over 0');
-
-        const options = {page: page || 1, limit: limit || 10}
-        
-        if(sortValidValues.includes(sort)){
-            options.sort = { price: sort }
-            return await ProductManager.getProducts( query, options )
-        }else{
-            if(sort) throw new Error('Sort values can only be 1 or -1')
+        options.limit = limit;
+        options.page = page;
+        if (sort !== null) {
+            options.sort = { price: sort };
         }
-        const products = await ProductManager.getProducts( query, options );
+
+        const products = await productDao.getProducts(filters, options);
+
         return products;
     }
 
-    async getProductById(id){
-        if(!id) throw new Error('Product ID is required.');
+    async getProductById(id) {
+        if (!id) throw new Error('Product ID is required.');
 
-        const product = await ProductManager.getProductById(id)
+        const product = await productDao.getProductById(id)
         return product;
     }
 
-    async createProduct({title, description, code, price, stock, category, thumbnails}){
-        if( !title ) throw new Error('Title is required');
-        if( !description ) throw new Error('Description is required');
-        if( !code ) throw new Error('Code is required');
-        if( !price ) throw new Error('Price is required');
-        if( !stock ) throw new Error('Stock is required');
-        if( !category ) throw new Error('Category is required');
+    async createProduct({ title, description, code, price, stock, category, thumbnails }) {
+        if (!title) throw new Error('Title is required');
+        if (!description) throw new Error('Description is required');
+        if (!code) throw new Error('Code is required');
+        if (!price) throw new Error('Price is required');
+        if (!stock) throw new Error('Stock is required');
+        if (!category) throw new Error('Category is required');
 
-        const product = ProductManager.createProduct({title, description, code, price, stock, category, thumbnails});
+        const product = productDao.createProduct({ title, description, code, price, stock, category, thumbnails });
         return product;
     }
 
-    async updateProduct(id, {title, description, code, price, stock, category, thumbnails}){
-        if(!id) throw new Error('Product ID is required.');
+    async updateProduct(id, { title, description, code, price, stock, category, thumbnails }) {
+        if (!id) throw new Error('Product ID is required.');
 
-        const product = await ProductManager.updateProduct(id, {title, description, code, price, stock, category, thumbnails});
+        const product = await productDao.updateProduct(id, { title, description, code, price, stock, category, thumbnails });
         return product;
     }
 
-    async deleteProduct(id){
-        if(!id) throw new Error('Product ID is required.');
+    async deleteProduct(id) {
+        if (!id) throw new Error('Product ID is required.');
 
-        const product = await ProductManager.deleteProduct(id);
+        const product = await productDao.deleteProduct(id);
         return product;
     }
 }
-
-export default new ProductValidator();
