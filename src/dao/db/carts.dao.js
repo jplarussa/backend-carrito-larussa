@@ -1,37 +1,68 @@
 import { cartsModel } from "./models/carts.model.js";
-import ProductManager from "./products.dao.js";
+import ProductDao from "./products.dao.js";
 
 
-export default class CartManager {
+export default class CartDao {
+    
+    async getCart(cartId) {
 
-    async addCart() {
+        const cart = await cartsModel.findOne({_id: cartId}).populate("products._id");
+        return cart;
+    }
+
+    async createCart() {
+        const newCart = await cart
         return await cartsModel.create({});
     }
+    
+    async findProduct(cid, pid) {
+        const cart = await cartsModel.findOne({_id: cid, "products.product": pid});
+        return cart;
+    }
 
-    async addProductToCart(cartId, productId) {
+    async updateQuantity(cartId, productId, quantity) {
 
-        const productManager = new ProductManager();
-        const checkProduct = await productManager.getProductById(productId);
+        const updateCartQ = await cartsModel.findOneAndUpdate({_id: cartId, "products.product": productId}, {$inc: {"products.$.quantity": quantity}});
+        return updateCartQ;
+    }
 
-        if (!checkProduct) return null;
-        
-        const cart = await cartsModel.findById(cartId);
+    async deleteProduct(cartId, productId) {
 
-        if (!cart) {
-            return null;
+        const deletedProduct = cartsModel.findOneAndUpdate({_id: cartId}, {$pull: {products: {product: productId}}})
+        return deletedProduct;
+    }
+
+    async emptyCart(cartId) {
+        const cart = await cartsModel.findOneAndReplace({_id: cartId}, {products: []});
+        return cart;
+    }
+
+}
+
+/* async addProductToCart(cartId, productId) {
+
+    const productDao = new ProductDao();
+    const checkProduct = await productDao.getProductById(productId);
+
+    if (!checkProduct) return null;
+    
+    const cart = await cartsModel.findById(cartId);
+
+    if (!cart) {
+        return null;
+    } else {
+        let existingProduct = cart.products.find(p => p.productId.equals(productId));
+
+        if (existingProduct) {
+            existingProduct.quantity++;
+            return await cart.save();
         } else {
-            let existingProduct = cart.products.find(p => p.productId.equals(productId));
-
-            if (existingProduct) {
-                existingProduct.quantity++;
-                return await cart.save();
-            } else {
-                const newProduct = { productId: productId, quantity: 1 };
-                cart.products.push(newProduct);
-                const result = await cart.save();
-            }
+            const newProduct = { productId: productId, quantity: 1 };
+            cart.products.push(newProduct);
+            const result = await cart.save();
         }
     }
+}
 
     async updateCart(cartId, products) {
 
@@ -55,63 +86,4 @@ export default class CartManager {
             };
         }
     }
-
-    async deleteCart(cartId) {
-        const cart = await cartsModel.findById(cartId);
-
-        if (!cart) {
-            return null
-        } else {
-            return await cart.delete();
-        }
-    }
-
-    async deleteProductFromCart(cartId, productId) {
-        const cart = await cartsModel.findById(cartId);
-
-        if (!cart) {
-            return null;
-        } else {
-            const index = cart.products.findIndex(p => p.productId.equals(productId));
-            if (index === -1) {
-                return null
-            }
-            cart.products.splice(index, 1);
-            return await cart.save();
-        }
-    }
-
-    async updateProductQuantityInCart(cartId, productId, quantity) {
-        const cart = await cartsModel.findById(cartId);
-        if (!cart) {
-            return null;
-        } else {
-            const existingProduct = cart.products.find(p => p.productId.equals(productId));
-            if (!existingProduct) {
-                return null;
-            }
-            existingProduct.quantity = quantity;
-            return await cart.save();
-        }
-    }
-
-    async emptyCart(cartId) {
-        const cart = await cartsModel.findById(cartId);
-
-        if (!cart) {
-            return null;
-        }
-
-        cart.products = [];
-        return await cart.save();
-    }
-
-    async getCart(cartId) {
-        const cart = await cartsModel.findById(cartId);
-        if (!cart) {
-            return null;
-        } else {
-            return cart;
-        }
-    }
-}
+*/

@@ -1,6 +1,7 @@
 import TicketManager from "../dao/db/tickets.dao";
 
-class TicketService{
+export default class TicketService {
+    
     createTicket(data){
         const { total, purchaser } = data;
 
@@ -8,5 +9,3 @@ class TicketService{
     }
 
 };
-
-export default new TicketService();
