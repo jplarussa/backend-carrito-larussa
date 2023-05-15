@@ -1,6 +1,8 @@
 import passport from 'passport';
 import { createHash, isValidPassword, generateJwtToken } from '../util.js';
 import UserManager from '../dao/db/user.dao.js';
+import UserDTO from '../dao/DTO/user.dto.js';
+
 
 const userManager = new UserManager();
 
@@ -45,14 +47,9 @@ export const login = async (req, res) => {
 
 
 export const getCurrent = async (req, res) => {
-    try {
 
-        res.json({ payload: req.user });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: error, message: "Can't get current user" });
-    }
-
+        const user = new UserDTO(req.user)
+        res.send(user);
 }
 
 
