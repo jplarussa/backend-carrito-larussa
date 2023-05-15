@@ -1,4 +1,4 @@
-import TicketManager from "../dao/db/tickets.dao";
+import TicketManager from "../dao/db/tickets.dao.js";
 
 export default class TicketService {
     
