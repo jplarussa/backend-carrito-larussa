@@ -19,8 +19,8 @@ import cartRouter from "./routes/cart.router.js";
 import viewsRouter from './routes/views.router.js';
 import usersViewsRouter from './routes/user.views.router.js';
 import sessionsRouter from './routes/auth.router.js';
-import githubLoginRouter from './routes/github-login.views.router.js'
-
+import githubLoginRouter from './routes/github-login.views.router.js';
+import emailRouter from './routes/email.router.js';
 
 //Declare Express server.
 const app = express();
@@ -66,6 +66,7 @@ app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/users", usersViewsRouter);
 app.use("/github", githubLoginRouter);
+app.use("/api/mail", emailRouter);
 app.use("/", viewsRouter);
 
 const httpServer = app.listen(config.port, () => {
