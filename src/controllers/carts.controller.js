@@ -79,6 +79,8 @@ export const emptyCart = async (req, res) => {
 
 export const purchaseCart = async (req, res) => {
     try{
+        console.log("REQ.USER");
+        console.log(req.user);
         const cartId = req.params.cid;
 
         const cart = await cartService.purchaseCart(cartId, req.user);

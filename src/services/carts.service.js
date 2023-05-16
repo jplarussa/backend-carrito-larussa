@@ -45,50 +45,54 @@ export default class CartsService {
         }
     }
 
-    async deleteProductFromCart(id, pid) {
+    async deleteProductFromCart(cartId, productId) {
 
-        if (!id) throw new Error('Cart ID is required.');
-        if (!pid) throw new Error('Product ID is required.');
+        if (!cartId) throw new Error('Cart ID is required.');
+        if (!productId) throw new Error('Product ID is required.');
 
-        const cart = await cartsDao.deleteProduct(id, pid);
+        const cart = await cartsDao.deleteProduct(cartId, productId);
         return cart;
     }
 
-    async emptyCart(id) {
-        if (!id) throw new Error('Cart ID is required.');
+    async emptyCart(cartId) {
+        if (!cartId) throw new Error('Cart ID is required.');
 
-        const cart = await cartsDao.emptyCart(id);
+        const cart = await cartsDao.emptyCart(cartId);
         return cart;
     }
 
-    async purchaseCart(id, user) {
+    async purchaseCart(cartId, user) {
+        console.log("USER");
+        console.log(user);
 
-        if (!id) throw new Error('Cart ID is required.');
+        if (!cartId) throw new Error('Cart ID is required.');
+
         const purchaser = user.email;
 
-        let cart = await cartsDao.getCart(id);
+        let cart = await cartsDao.getCart(cartId);
         if (!cart.products.length) throw new Error('Cart is empty')
 
         const notProcessed = []
         let total = 0;
 
-        cart.products.forEach(async item => {
+        for (const item of cart.products) {
             if (item.quantity <= item.productId.stock) {
                 let updatedStock = item.productId.stock - item.quantity;
-                productService.updateProduct(item.productId.id, { stock: updatedStock })
+                productService.updateProduct(item.productId._id, { stock: updatedStock })
 
                 total += item.quantity * item.productId.price;
 
-                await cartsDao.deleteProduct(id, item.productId.id);
+                await cartsDao.deleteProduct(cartId, item.productId._id);
 
             } else {
 
-                notProcessed.push(item.productId.id)
+                notProcessed.push(item.productId._id)
             };
-        })
+        }
 
         if (total == 0) {
-            return notProcessed;
+            const result = {Error: "Products out of stock returned:", productsReturned: notProcessed}
+            return result;
         }
 
         let ticket = ticketService.createTicket({ total, purchaser });
