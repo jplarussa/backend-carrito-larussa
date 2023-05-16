@@ -33,7 +33,7 @@ export const login = async (req, res) => {
 
         const access_token = generateJwtToken(tokenUser);
         res.cookie('jwtCookieToken', access_token, {
-            maxAge: 900000,
+            maxAge: 1200000,
             httpOnly: true
         });
         res.status(200).json({success: true, redirectUrl: '/products' });
