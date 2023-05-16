@@ -12,7 +12,7 @@ export default class CartsService {
         if (!id) throw new Error('Product ID is required.');
         
         const cart = await cartsDao.getCart(id);
-        return cart;
+        return cart;    
     }
     
     async createCart() {

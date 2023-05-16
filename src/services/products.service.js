@@ -23,7 +23,8 @@ export default class ProductsService {
                 filters.status = status;
             }
         }
-
+        
+        options.lean = true;
         options.limit = limit;
         options.page = page;
         if (sort !== null) {

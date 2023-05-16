@@ -5,8 +5,10 @@ import GitHubStrategy from 'passport-github2';
 import { createHash, isValidPassword } from '../util.js'
 import config from './config.js';
 import UserManager from '../dao/db/user.dao.js';
+import CartsService from '../services/carts.service.js';
 
 const userManager = new UserManager();
+const cartsService = new CartsService();
 
 const LocalStrategy = passportLocal.Strategy;
 
@@ -30,12 +32,15 @@ const initializePassport = () => {
                     return done(null, false, { messages: 'User already exist.' });
                 }
 
+                const cart = await cartsService.createCart();
+
                 const user = {
                     first_name,
                     last_name,
                     email: username,
                     age,
                     password: createHash(password),
+                    cart: cart._id
                 }
 
                 if (user.email === config.adminName && password === config.adminPassword) {
