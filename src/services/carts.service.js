@@ -78,7 +78,7 @@ export default class CartsService {
         for (const item of cart.products) {
             if (item.quantity <= item.productId.stock) {
                 let updatedStock = item.productId.stock - item.quantity;
-                productService.updateProduct(item.productId._id, { stock: updatedStock })
+                await productService.updateProduct(item.productId._id, { stock: updatedStock })
 
                 total += item.quantity * item.productId.price;
 
