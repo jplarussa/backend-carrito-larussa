@@ -1,4 +1,3 @@
-import passport from 'passport';
 import { createHash, isValidPassword, generateJwtToken } from '../util.js';
 import UserManager from '../dao/db/user.dao.js';
 import UserDTO from '../dao/DTO/user.dto.js';

@@ -10,13 +10,13 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-transporter.verify(function(error, success) {
+transporter.verify(function (error, success) {
     if (error) {
         console.log(error);
     } else {
         console.log('Server is ready to take our messages');
     }
-  });
+});
 
 const mailOptions = (receiver) => {
     return {
@@ -31,17 +31,17 @@ const mailOptions = (receiver) => {
 
 export const sendEmail = (req, res) => {
     try {
-        const {email} = req.user
+        const { email } = req.user
         let finalEmail = email ? email : config.gmailAccount;
         let result = transporter.sendMail(mailOptions(finalEmail), (error, info) => {
             if (error) {
-                res.status(400).send({message: "Error", payload: error});
+                res.status(400).send({ message: "Error", payload: error });
             }
             console.log('Message sent: %s', info.messageId);
-            res.send({message: "Success!", payload: info});
+            res.send({ message: "Success!", payload: info });
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send({error:  error, message: "Could not send email from:" + config.gmailAccount});
+        res.status(500).send({ error: error, message: "Could not send email from:" + config.gmailAccount });
     }
 };

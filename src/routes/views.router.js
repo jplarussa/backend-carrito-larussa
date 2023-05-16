@@ -25,14 +25,9 @@ router.get('/chat', (req, res) => {
 
 router.get('/products', passportCall('jwt'), async (req, res) => {
 
-    console.log("User loggued: ");
-    console.log(req.user);
-
     try {
 
         const products = await productsService.getProducts(req.query);
-        console.log("PRODUCTS :");
-        console.log(products);
 
         let user, admin = null;
 

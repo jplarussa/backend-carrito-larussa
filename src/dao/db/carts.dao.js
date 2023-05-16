@@ -1,5 +1,4 @@
 import { cartsModel } from "./models/carts.model.js";
-import ProductDao from "./products.dao.js";
 
 
 export default class CartDao {
@@ -11,8 +10,8 @@ export default class CartDao {
     }
 
     async createCart() {
-        const newCart = await cart
-        return await cartsModel.create({});
+        const newCart = await cartsModel.create({});
+        return newCart;
     }
     
     async findProduct(cid, pid) {

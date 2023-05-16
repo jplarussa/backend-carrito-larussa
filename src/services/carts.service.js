@@ -17,7 +17,6 @@ export default class CartsService {
     
     async createCart() {
         const cart = await cartsDao.createCart();
-        console.log(cart)
         return cart;
     }
 

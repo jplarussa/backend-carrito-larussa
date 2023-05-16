@@ -32,15 +32,12 @@ const initializePassport = () => {
                     return done(null, false, { messages: 'User already exist.' });
                 }
 
-                const cart = await cartsService.createCart();
-
                 const user = {
                     first_name,
                     last_name,
                     email: username,
                     age,
-                    password: createHash(password),
-                    cart: cart._id
+                    password: createHash(password)
                 }
 
                 if (user.email === config.adminName && password === config.adminPassword) {
@@ -63,17 +60,25 @@ const initializePassport = () => {
             try {
 
                 const user = await userManager.findOne(username);
-                console.log("User finded for login:");
-                console.log(user);
 
                 if (!user) {
                     console.warn("User doesn't exists with username: " + username);
                     return done(null, false, { messages: "Invalid credentials." });
                 }
+
                 if (!isValidPassword(user, password)) {
                     console.warn("Invalid credentials for user: " + username);
                     return done(null, false, { messages: "Invalid credentials." });
                 }
+
+                if (!user.cart) {
+                    console.log("Creating Cart for " + username);
+                    const cart = await cartsService.createCart();
+
+                    user.cart = cart._id;
+                    await user.save();
+                }
+
 
                 return done(null, user, { messages: "Login Success." });
 
@@ -91,11 +96,8 @@ const initializePassport = () => {
 
         }, async (jwt_payload, done) => {
 
-            console.log("Entering passport Strategy with JWT.");
-
             try {
-                console.log("JWT obtained from payload");
-                console.log(jwt_payload);
+
                 return done(null, jwt_payload.user);
 
             } catch (error) {
@@ -170,13 +172,11 @@ const initializePassport = () => {
   */
 const cookieExtractor = req => {
     let token = null;
-    console.log("Entering Cookie Extractor");
+
     if (req && req.cookies) { //Validate that the request and cookies exist.
-        console.log("Cookies presentes: ");
+        console.log("Token from Cookie:");
         console.log(req.cookies);
         token = req.cookies['jwtCookieToken']; //-> Keep in mind this name is that of the Cookie.
-        console.log("Token obtained from Cookie:");
-        console.log(token);
     }
     return token;
 };
