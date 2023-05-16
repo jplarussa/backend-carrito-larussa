@@ -14,14 +14,20 @@ export default class CartDao {
         return newCart;
     }
     
-    async findProduct(cid, pid) {
-        const cart = await cartsModel.findOne({_id: cid, "products.product": pid});
+    async findProduct(cartId, productId) {
+        const cart = await cartsModel.findOne({_id: cartId, "products.product": productId});
         return cart;
+    }
+
+    async addProduct(cartId, productId, quantity) {
+
+        const updatedCart = await cartsModel.findByIdAndUpdate(cartId, {$addToSet: {products: {productId: productId, quantity: quantity}}}, {new: true});
+        return updatedCart;
     }
 
     async updateQuantity(cartId, productId, quantity) {
 
-        const updateCartQ = await cartsModel.findOneAndUpdate({_id: cartId, "products.product": productId}, {$inc: {"products.$.quantity": quantity}});
+        const updateCartQ = await cartsModel.findOneAndUpdate({_id: cartId, "products.product": productId}, {$inc: {"products.$.quantity": quantity}}, {new: true});
         return updateCartQ;
     }
 

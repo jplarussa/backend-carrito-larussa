@@ -55,7 +55,7 @@ router.get('/carts/:cid', async (req, res) => {
     const page = req.query.page || 1; */
 
     try {
-        const carts = await cartsModel.paginate({}, { lean: true });
+        const carts = await cartsModel.paginate({_id: req.params.cid}, { lean: true });
         res.render("carts", {
             carts: carts.docs,
             currentPage: carts.page,

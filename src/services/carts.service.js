@@ -7,14 +7,14 @@ const productService = new ProductsService();
 const ticketService = new TicketService();
 
 export default class CartsService {
-    
+
     async getCart(id) {
         if (!id) throw new Error('Product ID is required.');
-        
+
         const cart = await cartsDao.getCart(id);
-        return cart;    
+        return cart;
     }
-    
+
     async createCart() {
         const cart = await cartsDao.createCart();
         return cart;
@@ -24,20 +24,24 @@ export default class CartsService {
 
         if (!cartId) throw new Error('Cart ID is required.');
         if (!productId) throw new Error('Product ID is required.');
-        if (!quantity) throw new Error('Quantity is required.');
 
-        if (isNaN(quantity)) {
-            throw new Error('Quantity must be a number.')
+        quantity = quantity || 1;
+        if (isNaN(quantity) || quantity <= 0) {
+            throw new Error('Quantity must be a positive number.');
         }
 
         const productInCart = await cartsDao.findProduct(cartId, productId);
         console.log(productInCart)
-        
+
         if (!productInCart) {
-            throw new Error('The product is not in the cart.')
+
+            const updatedCart = await cartsDao.addProduct(cartId, productId, quantity);
+            return updatedCart;
+            
         } else {
-            const cart = await cartsDao.updateQuantity(cartId, productId, quantity);
-            return cart;
+
+            const updatedCart = await cartsDao.updateQuantity(cartId, productId, quantity);
+            return updatedCart;
         }
     }
 
@@ -58,7 +62,7 @@ export default class CartsService {
     }
 
     async purchaseCart(id, user) {
-        
+
         if (!id) throw new Error('Cart ID is required.');
         const purchaser = user.email;
 
@@ -78,7 +82,7 @@ export default class CartsService {
                 await cartsDao.deleteProduct(id, item.productId.id);
 
             } else {
-                
+
                 notProcessed.push(item.productId.id)
             };
         })
@@ -97,7 +101,7 @@ export default class CartsService {
     }
 }
 
-    
+
 /*     async addProductToCart(id, list) {
         if (!id) throw new Error('Cart ID is required.');
 

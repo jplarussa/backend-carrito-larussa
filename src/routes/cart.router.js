@@ -12,6 +12,5 @@ router.delete('/:cid', emptyCart);
 router.get('/:cid/purchase', purchaseCart);
 
 // router.put('/:cid/products/:pid', updateProductQuantityToCart);
-// router.put('/:cid', updateCart); //ver este, en el otro como AddProductToCart
 
 export default router;

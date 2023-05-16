@@ -5,28 +5,31 @@ import config from "../config/config.js";
 const ticketService = new TicketService();
 const userService = new UserManager();
 
-export const getTickets = async (req, res, next) => {
+export const getTickets = async (req, res) => {
     try {
         const tickets = await ticketService.getAll();
-        res.send({status: 200, payload: tickets});
+        res.status(200).json(tickets);
     }   
     catch(error) {
-        next(error)
+        console.error(error);
+        res.status(400).json({error: "Error getting the tickets. "+error.message});
     }
 }
 
-export const getTicketById = async (req, res, next) => {
+export const getTicketById = async (req, res) => {
     try {
-        const {tid} = req.params;
+        const tid = req.params.tid;
         const ticket = await ticketService.getTicketById(tid);
-        res.send({status: 200, payload: ticket});
+        res.status(200).json(ticket);
     }   
     catch(error) {
-        next(error)
+        console.error(error);
+        res.status(400).json({error: "Error getting the ticket. "+error.message});
     }
 }
 export const createTicket = async (req, res, next) => {
     try {
+        
         const {username,products} = req.body;
         const resultUser = await userService.getUserByUsername(username);
         const resultProducts = await fetch(config.endpoint+config.port+'/api/products/?limit=999')
