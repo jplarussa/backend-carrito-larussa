@@ -9,6 +9,8 @@ import config from "./config/config.js";
 //Database
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
+// Errors
+import errorHandler from './middlewares/errors/errors.middleware.js'
 // Passport
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -38,6 +40,12 @@ app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + "/views");
 
+//MIDDLEWARE ERROR
+cartRouter.use(errorHandler);
+productsRouter.use(errorHandler);
+ticketsRouter.use(errorHandler)
+
+
 //Session
 app.use(session(
     {
@@ -51,6 +59,7 @@ app.use(session(
         saveUninitialized: true
     }
 ))
+
 
 // COOKIES
 app.use(cookieParser("Cookie$C0der"));
