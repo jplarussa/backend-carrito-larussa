@@ -24,6 +24,7 @@ import sessionsRouter from './routes/auth.router.js';
 import githubLoginRouter from './routes/github-login.views.router.js';
 import ticketsRouter from './routes/tickets.router.js'
 import emailRouter from './routes/email.router.js';
+import mockingRouter from './routes/mock.router.js';
 
 //Declare Express server.
 const app = express();
@@ -79,6 +80,7 @@ app.use("/users", usersViewsRouter);
 app.use("/github", githubLoginRouter);
 app.use("/api/mail", emailRouter);
 app.use("/", viewsRouter);
+app.use('/mockingproducts', mockingRouter)
 
 const httpServer = app.listen(config.port, () => {
     console.log(`Express Server listening  on the port: ${config.port}`);

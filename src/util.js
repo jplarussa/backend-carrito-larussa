@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from './config/config.js';
-import { faker } from '@faker-js/faker';
+import { fakerES as faker } from '@faker-js/faker';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,16 +61,17 @@ export const passportCall = (strategy) => {
     }
 };
 
-export const generateProduct = () => {
+
+export const generateMockProduct = () => {
     let product = {
         _id: faker.database.mongodbObjectId(),
-        code: faker.random.alphaNumeric(7),
+        code: faker.string.alphanumeric(7),
         title: faker.commerce.productName(),
         description: faker.lorem.text(),
-        price: parseInt(faker.random.numeric(3)),
-        stock: parseInt(faker.random.numeric(2)),
+        price: parseInt(faker.string.numeric(3)),
+        stock: parseInt(faker.string.numeric(2)),
         category: faker.commerce.department(),
-        thumbnail: faker.image.image()
+        thumbnail: faker.image.url()
     }
     product.available = product.stock > 0 ? true : false;
     return product;

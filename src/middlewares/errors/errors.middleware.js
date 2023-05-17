@@ -1,6 +1,6 @@
 import EErrors from './errors-enum.js'
 
-export default errorHandler = (error, req, res, next) => {
+const errorHandler = (error, req, res, next) => {
     
     console.log("Error detected entering the Error Handler:");
     console.log(error.cause);
@@ -31,3 +31,5 @@ export default errorHandler = (error, req, res, next) => {
             res.status(500).send({status: "error", error: "Unhandled error"});
     }
 }
+
+export default errorHandler;
