@@ -1,5 +1,7 @@
 import {generateProduct} from '../util.js'
 
+faker.locale = 'es';
+
 export const getProducts = async (req, res) => {
     try {
         let products = [];
