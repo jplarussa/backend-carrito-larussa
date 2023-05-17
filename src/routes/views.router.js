@@ -7,7 +7,7 @@ import { productsModel } from "../dao/db/models/products.model.js"
 import { cartsModel } from "../dao/db/models/carts.model.js"
 import { passportCall } from "../util.js";
 import ProductsService from "../services/products.service.js";
-import { isUser } from "../middlewares/isUser.js"
+import { isUser } from "../middlewares/role/isUser.middleware.js"
 
 
 

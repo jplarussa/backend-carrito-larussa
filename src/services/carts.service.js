@@ -97,32 +97,6 @@ export default class CartsService {
 
         let ticket = ticketService.createTicket({ total, purchaser });
 
-        // No supe resolver para mandar ambas cosas
-        // si hago { ticket, notProcessed } o [ticket, not Processed ], no me muestra el ticket en mi end
-        // esta solucion tampoco: ticket.not_processed = notProcessed;
-
-        return ticket;
+        return { ticket, notProcessed };
     }
 }
-
-
-/*     async addProductToCart(id, list) {
-        if (!id) throw new Error('Cart ID is required.');
-
-        list.forEach(async (data) => {
-            let { product, quantity } = data;
-
-            if (!product) throw new Error('Product ID is required.');
-            if (quantity && isNaN(quantity)) throw new Error('Quantity must be a number.')
-
-            // -- checks if the product is already in the cart, to not accidentally add twice.
-            const productInCart = await cartsDao.findProduct(id, product);
-            if (productInCart) {
-                await cartsDao.updateQuantity(id, product, quantity || 1);
-            } else {
-                await cartsDao.addProduct(id, product, quantity || 1);
-            }
-        })
-
-        return await cartsDao.getCart(id);
-    } */
