@@ -41,12 +41,6 @@ app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + "/views");
 
-//MIDDLEWARE ERROR
-cartRouter.use(errorHandler);
-productsRouter.use(errorHandler);
-ticketsRouter.use(errorHandler)
-
-
 //Session
 app.use(session(
     {
@@ -99,3 +93,6 @@ const connectMongoDB = async () => {
 
 }
 connectMongoDB();
+
+//MIDDLEWARE ERROR
+app.use(errorHandler);

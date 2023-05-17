@@ -1,7 +1,7 @@
-export const generateUserErrorInfo = (user) => {
-    return `Una o más propiedades fueron enviadas incompletas o no son válidas.
-        Lista de propiedades requeridas:
-            * fist_name: type String, recibido: ${user.first_name}
-            * email: type String, recibido: ${user.email}
-    `;
+export const updateQuantityInCartErrorInfo = (cart, product) => {
+    return `One or more properties were sent incomplete or are invalid.
+            List of required properties:
+            * cartId: type String, received: ${cart}
+            * email: type String, received: ${productId}
+            `;
 };
