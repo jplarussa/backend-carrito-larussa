@@ -2,8 +2,7 @@ import CartDao from "../dao/db/carts.dao.js";
 import ProductsService from "./products.service.js";
 import TicketService from "./tickets.service.js";
 import CustomError from "../middlewares/errors/CustomError.js"
-// import EErrors from "../middlewares/errors/errors-enum.js";
-import { updateQuantityInCartErrorInfo } from "../middlewares/errors/messages/user-creation-error.message.js";
+import { updateQuantityInCartErrorInfo, generateErrorInfo } from "../middlewares/errors/messages/error.messages.js";
 
 const cartsDao = new CartDao();
 const productService = new ProductsService();
@@ -28,20 +27,13 @@ export default class CartsService {
         // if (!cartId) throw new Error('Cart ID is required.');
         // if (!productId) throw new Error('Product ID is required.');
 
-        // Prueba uso customError
-        console.log("LLEGA ESTE PRODUCTID:");
-        console.log(typeof(productId));
-        console.log(productId);
-        console.log(typeof(cartId));
-        console.log(cartId);
 
-        if (!cartId || productId === "null") {
-            console.log("ENTREEEEEEEEEEEE");
+        if (!cartId || !productId || productId === "null" || productId === "undefined") {
             throw CustomError.createError({
                 statusCode: 401,
-                cause: updateQuantityInCartErrorInfo(cartId, productId),
+                code: 1,
                 message: "The cart or product are invalid",
-                code: 2
+                cause: updateQuantityInCartErrorInfo(cartId, productId)
             })
         }
                 

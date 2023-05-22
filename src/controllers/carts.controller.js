@@ -1,7 +1,4 @@
 import CartsService from "../services/carts.service.js";
-// import CustomError from "../middlewares/errors/CustomError.js"
-// import EErrors from "../middlewares/errors/errors-enum.js"
-// import { updateQuantityInCartErrorInfo } from "../middlewares/errors/messages/user-creation-error.message.js";
 
 const cartService = new CartsService;
 
@@ -44,9 +41,7 @@ export const updateProductQuantityToCart = async (req, res, next) => {
         res.status(200).json(cart);
 
     } catch (error) {
-        console.error(error);
         next(error)
-        // res.status(400).json({error: "Error updating product quantity in cart. "+error.message});
     }
     
 }

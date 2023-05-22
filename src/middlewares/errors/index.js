@@ -3,12 +3,11 @@ import EErrors from './errors-enum.js'
 export default (error, req, res, next) => {
     
     console.log("Error detected entering the Error Handler:");
-    console.log(error.name);
 
     switch (error.code){
 
         case EErrors.INVALID_TYPES_ERROR:
-            res.status(error.status).send({status: "Error", error: error.name || "A invalid type error has occurred", details: error.message});
+            res.status(error.status).send({status: "Error", error: error.name || "A invalid type error has occurred", details: error.message, cause: error.cause? error.cause : "Not detailed"});
             break;
 
         case EErrors.DATABASE_ERROR:
@@ -16,7 +15,7 @@ export default (error, req, res, next) => {
             break;
 
         case EErrors.MISSING_DATA:
-            res.status(error.status).send({status: "Error", error: error.name || "There are data that have not been sent", details: error.message});
+            res.status(error.status).send({status: "Error", error: error.name || "There are data that have not been sent", details: error.message, cause: error.cause? error.cause : "Not detailed"});
             break;
 
         case EErrors.RENDERING_ERROR:
