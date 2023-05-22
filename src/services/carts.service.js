@@ -32,17 +32,19 @@ export default class CartsService {
         console.log("LLEGA ESTE PRODUCTID:");
         console.log(typeof(productId));
         console.log(productId);
+        console.log(typeof(cartId));
+        console.log(cartId);
 
-        if (!cartId || !productId) {
+        if (!cartId || productId === "null") {
+            console.log("ENTREEEEEEEEEEEE");
             throw CustomError.createError({
-                statusCode: 400,
-                name: "Cart Update Error",
+                statusCode: 401,
                 cause: updateQuantityInCartErrorInfo(cartId, productId),
-                message: "Error trying to update the cart",
+                message: "The cart or product are invalid",
                 code: 2
             })
         }
-
+                
         quantity = quantity || 1;
         if (isNaN(quantity) || quantity <= 0) {
             throw new Error('Quantity must be a positive number.');
