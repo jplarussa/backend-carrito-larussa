@@ -4,6 +4,7 @@
   "description": "Back End de un carrito de compras",
   "main": "app.js",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

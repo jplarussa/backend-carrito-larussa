@@ -32,7 +32,7 @@ export const createCart = async (req, res) => {
     
 }
 
-export const updateProductQuantityToCart = async (req, res) => {
+export const updateProductQuantityToCart = async (req, res, next) => {
     try {
 
         const cartId = req.params.cid;
@@ -45,12 +45,8 @@ export const updateProductQuantityToCart = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(400).json({error: "Error updating product quantity in cart. "+error.message});
-        // PRUEBA 2 CUSTOM ERROR
-        // CustomError.createError({
-        //     message: "Error trying to update the cart",
-        //     code: EErrors.INVALID_TYPES_ERROR
-        // })
+        next(error)
+        // res.status(400).json({error: "Error updating product quantity in cart. "+error.message});
     }
     
 }

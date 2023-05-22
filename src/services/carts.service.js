@@ -1,9 +1,9 @@
 import CartDao from "../dao/db/carts.dao.js";
 import ProductsService from "./products.service.js";
 import TicketService from "./tickets.service.js";
-// import CustomError from "../middlewares/errors/CustomError.js"
-// import EErrors from "../middlewares/errors/errors-enum.js"
-// import { updateQuantityInCartErrorInfo } from "../middlewares/errors/messages/user-creation-error.message.js";
+import CustomError from "../middlewares/errors/CustomError.js"
+// import EErrors from "../middlewares/errors/errors-enum.js";
+import { updateQuantityInCartErrorInfo } from "../middlewares/errors/messages/user-creation-error.message.js";
 
 const cartsDao = new CartDao();
 const productService = new ProductsService();
@@ -25,19 +25,23 @@ export default class CartsService {
 
     async updateQuantity(cartId, productId, quantity) {
 
-        if (!cartId) throw new Error('Cart ID is required.');
-        if (!productId) throw new Error('Product ID is required.');
+        // if (!cartId) throw new Error('Cart ID is required.');
+        // if (!productId) throw new Error('Product ID is required.');
 
         // Prueba uso customError
+        console.log("LLEGA ESTE PRODUCTID:");
+        console.log(typeof(productId));
+        console.log(productId);
 
-        // if (!cartId || !productId) {
-        //     CustomError.createError({
-        //         name: "Cart Update Error",
-        //         cause: updateQuantityInCartErrorInfo(cartId, productId),
-        //         message: "Error trying to update the cart",
-        //         code: EErrors.INVALID_TYPES_ERROR
-        //     })
-        // }
+        if (!cartId || !productId) {
+            throw CustomError.createError({
+                statusCode: 400,
+                name: "Cart Update Error",
+                cause: updateQuantityInCartErrorInfo(cartId, productId),
+                message: "Error trying to update the cart",
+                code: 2
+            })
+        }
 
         quantity = quantity || 1;
         if (isNaN(quantity) || quantity <= 0) {

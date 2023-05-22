@@ -67,7 +67,7 @@ export const generateMockProduct = () => {
         _id: faker.database.mongodbObjectId(),
         code: faker.string.alphanumeric(7),
         title: faker.commerce.productName(),
-        description: faker.lorem.text(),
+        description: faker.commerce.productDescription(),
         price: parseInt(faker.string.numeric(3)),
         stock: parseInt(faker.string.numeric(2)),
         category: faker.commerce.department(),

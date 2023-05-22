@@ -10,7 +10,7 @@ import config from "./config/config.js";
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 // Errors
-import errorHandler from './middlewares/errors/errors.middleware.js'
+import errorHandler from './middlewares/errors/index.js'
 // Passport
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -76,6 +76,10 @@ app.use("/api/mail", emailRouter);
 app.use("/", viewsRouter);
 app.use('/mockingproducts', mockingRouter)
 
+
+//MIDDLEWARE ERROR
+app.use(errorHandler);
+
 const httpServer = app.listen(config.port, () => {
     console.log(`Express Server listening  on the port: ${config.port}`);
 })
@@ -94,5 +98,3 @@ const connectMongoDB = async () => {
 }
 connectMongoDB();
 
-//MIDDLEWARE ERROR
-app.use(errorHandler);
