@@ -39,8 +39,7 @@ class ProductManager {
 
             this.products.push(newProduct);
 
-            console.log("Creating Product:");
-            console.log(newProduct);
+            req.logger.info(`Creating Product: ${newProduct}`);
 
             await this.saveProducts();
             return {

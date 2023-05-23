@@ -47,7 +47,7 @@ router.get('/products', passportCall('jwt'), async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
+        req.logger.error(`Products view error:  ${error.message}`);
         res.status(500).send({ error: "Error ", message: error });
     }
 });
@@ -65,7 +65,7 @@ router.get('/carts/:cid', async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
+        req.logger.error(`Carts view error:  ${error.message}`);
         res.status(500).send({ error: "Error ", message: error });
     }
 });

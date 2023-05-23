@@ -7,13 +7,13 @@ const userManager = new UserManager();
 
 export const register = async (req, res) => {
     try {
-        console.log(req.user);
+        req.logger.info(`User: ${req.user}`);
         res.status(201).json({
             message: 'Success',
             redirectUrl: '/users/login'
         });
     } catch (error) {
-        console.error(error);
+        req.logger.console.warn(`Register user error:  ${error}`);
         res.status(500).json({ error: error.message, message: 'Error registering user' });
     }
 };
@@ -55,7 +55,7 @@ export const getCurrent = async (req, res) => {
 export const logout = async (req, res) => {
     req.session.destroy();
     res.clearCookie('jwtCookieToken');
-    console.log("User logout");
+    req.logger.info('User logout');
     res.redirect('/users/login');
 }
 
@@ -63,7 +63,7 @@ export const restorePass = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await userManager.findOne(email);
-        console.log("Restoring pass for: " + email);
+        req.logger.info(`Restoring pass for: ${email}`);
 
         if (!user) {
             return res.status(401).json({ status: 'error', error: "Can't find user." });
@@ -76,7 +76,7 @@ export const restorePass = async (req, res) => {
 
         const result = await userManager.updateUser({ email: email }, newUser);
 
-        console.log("Password restored");
+        req.logger.info(`Password restored`);
         res.status(200).json({ status: "success", message: `Password restored` })
 
     } catch (error) {
@@ -100,7 +100,7 @@ export const gitHubCallback  = async (req, res) => {
     };
 
     const access_token = generateJwtToken(req.session.user);
-    console.log(access_token);
+    req.logger.http(`JWT Token: ${access_token}`);
 
     res.cookie('jwtCookieToken', access_token, {
         maxAge: 900000,
