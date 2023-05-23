@@ -11,6 +11,8 @@ import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 // Errors
 import errorHandler from './middlewares/errors/index.js'
+import { addLogger, customLogger } from './config/logger.js';
+
 // Passport
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -25,6 +27,7 @@ import githubLoginRouter from './routes/github-login.views.router.js';
 import ticketsRouter from './routes/tickets.router.js'
 import emailRouter from './routes/email.router.js';
 import mockingRouter from './routes/mock.router.js';
+import logRouter from './routes/log.router.js';
 
 //Declare Express server.
 const app = express();
@@ -32,6 +35,8 @@ const app = express();
 //Prepare server settings to receive JSON objects
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+// Define logger middleware
+app.use(addLogger);
 
 // Define path for static content
 app.use(express.static(path.join(__dirname +'/public')));
@@ -75,6 +80,7 @@ app.use("/github", githubLoginRouter);
 app.use("/api/mail", emailRouter);
 app.use("/", viewsRouter);
 app.use('/mockingproducts', mockingRouter)
+app.use('/loggerTest', logRouter)
 
 
 //MIDDLEWARE ERROR
@@ -90,9 +96,9 @@ setupWebSocket(httpServer);
 const connectMongoDB = async () => {
     try {
         await mongoose.connect(config.mongoUrl);
-        console.log("Connection to DB Succed");
+        customLogger.info("Connection to DB Succed");
     } catch (error) {
-        console.log("Error on connection to DB"+error);
+        customLogger.fatal(`Error on connection to DB. ${error}`);
     }
 
 }

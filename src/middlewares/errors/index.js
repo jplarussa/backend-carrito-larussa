@@ -2,7 +2,7 @@ import EErrors from './errors-enum.js'
 
 export default (error, req, res, next) => {
     
-    console.log("Error detected entering the Error Handler:");
+    req.logger.debug(`Error cause: ${error.cause}`);
 
     switch (error.code){
 
@@ -27,6 +27,7 @@ export default (error, req, res, next) => {
             break;
 
         default:
+            req.logger.fatal(error);
             res.status(500).send({status: "error", error: "Unhandled error"});
     }
 }
