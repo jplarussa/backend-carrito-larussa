@@ -7,23 +7,11 @@ const productsService = new ProductsService();
 const cartsService = new CartsService();
 
 export const get = async (req, res) => {
-    try {
         res.redirect("/users/login");
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: "Error "+error.message });
-    }
 };
 
 export const getChat = async (req, res) => {
-    try {
         res.render("chat", {});
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: "Error "+error.message });
-    }
 };
 
 export const getProducts = async (req, res) => {
@@ -68,13 +56,7 @@ export const getPaginatedCart = async (req, res) => {
 };
 
 export const getRealTimeProducts = async (req, res) => {
-    try {
         res.render("realTimeProducts");
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: "Error "+error.message });
-    }
 };
 
 
