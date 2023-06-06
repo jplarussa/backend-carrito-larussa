@@ -16,7 +16,7 @@ function setupWebSocket(server) {
 
     io.on("connection", (socket) => {
 
-        console.log("Someone connected to the server");
+        req.logger.info(`Someone connected to the server`);
 
         // Emit Initial products
         (async () => {
@@ -36,7 +36,7 @@ function setupWebSocket(server) {
         // Chat sockets
         socket.on("message", data => {
 
-            console.log(data);
+            req.logger.info(`Data received: ${data}`);
             messages.push(data);
             io.emit("messageLogs", messages);
             uploadMessages(messages);
@@ -46,9 +46,9 @@ function setupWebSocket(server) {
         async function uploadMessages(newMessages) {
             try {
                 let uploadedMessages = await messageManager.addMessage(newMessages);
-                console.log(messages);
-    
-                console.log("Message Added");
+                req.logger.debug(messages);
+
+                req.logger.info("Message Added");
                 return {
                     success: true,
                     message: `Message added`
@@ -60,7 +60,7 @@ function setupWebSocket(server) {
         
 
         socket.on("userConnected", data => {
-            console.log("User connected: " + data.user);
+            req.logger.info(`User connected: ${data.user}`);
             socket.broadcast.emit("userConnected", data.user);
         });
 

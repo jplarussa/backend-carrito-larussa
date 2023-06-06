@@ -87,7 +87,7 @@ app.use('/loggerTest', logRouter)
 app.use(errorHandler);
 
 const httpServer = app.listen(config.port, () => {
-    console.log(`Express Server listening  on the port: ${config.port}`);
+    customLogger.http(`Express Server listening  on the port: ${config.port}`);
 })
 // Initialize websocket Server
 setupWebSocket(httpServer);

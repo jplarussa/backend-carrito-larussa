@@ -31,8 +31,7 @@ class CartManager {
 
             this.carts.push(newCart);
 
-            console.log("Creating Cart:");
-            console.log(newCart);
+            req.logger.info(`Creating Cart: ${newCart}`);
 
             await this.saveCarts();
             return {

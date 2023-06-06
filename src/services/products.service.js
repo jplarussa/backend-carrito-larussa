@@ -67,8 +67,7 @@ export default class ProductsService {
 
         const product = await productDao.createProduct({ title, description, code, price, stock, category, thumbnails });
         
-        console.log("Product Added: ");
-        console.log(product);
+        req.logger.info(`Product Added: ${product}`);
 
         return product;
     }
