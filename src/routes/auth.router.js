@@ -14,6 +14,8 @@ router.post("/logout", logout);
 router.post("/recover", recoverPass);
 router.post("/restorePass", restorePass);
 
+// router.post('/premium/:uid', passportCall('jwt', {session: false}), postSwapUserClass);
+
 // // VER
 // router.post('/recover', recoverUser, sc.postRecover);
 // router.post('/recoverPassword', recoverPassword, sc.postRecoverPassword);

@@ -134,7 +134,7 @@ export const gitHubCallback  = async (req, res) => {
     res.redirect("/github");
 };
 
-/* postRecoverPassword = async(req, res, next) => {
+/* restorePass = async(req, res, next) => {
     try {
         req.logger.http(`${req.method} at ${req.url} - ${new Date().toLocaleDateString()}`);
 
