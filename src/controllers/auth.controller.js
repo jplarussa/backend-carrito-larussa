@@ -69,12 +69,12 @@ export const restorePass = async (req, res) => {
             return res.status(401).json({ status: 'error', error: "Can't find user." });
         }
 
-        const newUser = {
+        const newUserPass = {
             email: email,
             password: createHash(password)
         }
 
-        const result = await userManager.updateUser({ email: email }, newUser);
+        const result = await userManager.updateUser({ email: email }, newUserPass);
 
         console.log("Password restored");
         res.status(200).json({ status: "success", message: `Password restored` })

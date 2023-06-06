@@ -111,4 +111,11 @@ export default class CartsService {
 
         return { ticket, notProcessed };
     }
+
+    async getPaginatedCart(cartId) {
+        if (!cartId) throw new Error('Cart ID is required.');
+
+        const cart = await cartsDao.getPaginatedCart(cartId);
+        return cart;
+    }
 }
