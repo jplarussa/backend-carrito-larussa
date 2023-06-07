@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import config from '../config/config.js';
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 587,
     auth: {
@@ -12,9 +12,9 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify(function (error, success) {
     if (error) {
-        req.logger.console.warn(`Transporter verify error:  ${error} `);
+        console.warn(`Transporter verify error:  ${error} `);
     } else {
-        req.logger.console.info(`Server is ready to take our messages.`);
+        console.info(`Server is ready to take our messages.`);
     }
 });
 
