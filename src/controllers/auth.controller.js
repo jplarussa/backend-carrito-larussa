@@ -1,7 +1,9 @@
 import { createHash, isValidPassword, generateJwtToken } from '../util.js';
 import UserManager from '../dao/db/user.dao.js';
 import UserDTO from '../dao/DTO/user.dto.js';
-import { transporter, sendEmail } from './email.controller.js';
+import { transporter } from './email.controller.js';
+import jwt from 'jsonwebtoken';
+import config from '../config/config.js';
 
 
 const userManager = new UserManager();
@@ -74,13 +76,13 @@ export const recoverPass = async (req, res) => {
         let restorePassToken = generateJwtToken(email, '1h')
         console.log(restorePassToken);
 
-        transporter.sendMail({
+        await transporter.sendMail({
             from: 'jplarussa@gmail.com',
             to: email,
             subject: 'Restore password from JP Ecommerce',
             html: `
             <div style="display: flex; flex-direction: column; justify-content: center;  align-items: center;">
-            <h1>To reset your password click <a href="http://localhost:8080/recoverLanding/${restorePassToken}">here</a></h1>
+            <h1>To reset your password click <a href="http://localhost:8080/users/recoverLanding/${restorePassToken}">here</a></h1>
             </div>`
         });
 
@@ -92,30 +94,46 @@ export const recoverPass = async (req, res) => {
         res.status(500).json({ error: error, message: 'Password could not be restored' });
     }
 }
+
 export const restorePass = async(req, res, next) => {
     try {
 
-        const {token, newPassword} = req.body;
-        if (newPassword.trim() == 0) return res.send({status: "error", message: "The password cannot be empty"});
+        const {token, password: newPassword} = req.body;
 
-        // let result;
-/*         
-        account.password = createHash(password);
+        const decodedToken = jwt.verify(token, config.jwtPrivateKey);
 
-        let result = await um.editOne(account.email, account); */
+        if (!newPassword || newPassword.trim() === "") {
+            return res.send({status: "error", message: "The password cannot be empty"});
+        }
 
-        if (result.acknowledged) res.send({status: "Ok", message: "Contraseña cambiada"});
+        const email = decodedToken.user;
+        const user = await userManager.findOne(email);
+        req.logger.info(`Check if user exist for: ${email}`);
+
+
+        if (!user) {
+            return res.status(401).json({ status: 'error', error: "Can't find user." });
+        }
+
+        if (isValidPassword(user, newPassword)) {
+            return res.send({status: "error", message: "The password cannot be the same"});
+        }
+
+        const hashedPass = createHash(newPassword)
+        const result = await userManager.updateUser({ email: email }, {password: hashedPass});
+
+        return res.status(200).json({status: "success", message: "The password was changed successfully."});
+
     } catch(error) {
+
+        if (error.name == 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token has expired.' });
+        }
+
         next(error)
     }
 }
 
-        /*         const newUserPass = {
-                    email: email,
-                    password: createHash(password)
-                } 
-        
-                const result = await userManager.updateUser({ email: email }, newUserPass);*/
 
 // export const gitHubLogin = passport.authenticate('github', { scope: ['user:email'] });
 
