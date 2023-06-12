@@ -37,6 +37,11 @@
           <span class="badge bg-danger">ADMIN</span>
         </li>
         {{/if}}
+        {{#if premium}}
+        <li class="nav-item me-3 d-flex align-items-center">
+          <span class="badge bg-warning">PREMIUM</span>
+        </li>
+        {{/if}}        
         <li class="nav-item">
           <form method="POST" action="/api/sessions/logout">
             <button class="btn btn-primary btn-sm nav-link" type="submit">Logout</button>

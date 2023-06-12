@@ -7,10 +7,10 @@ const router = Router();
 const simulateUserMiddleware = (req, res, next) => {
     // Simular el objeto req.user según tus necesidades
     req.user = {
-        name: 'Gabriela Alanis',
-        email: 'ga.alanis07@gmail.com',
-        age: 40,
-        role: 'user'
+        name: 'Jean Pierre',
+        email: 'jplarussa@gmail.com',
+        age: 50,
+        role: 'premium'
     };
 
     next();

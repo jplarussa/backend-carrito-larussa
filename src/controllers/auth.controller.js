@@ -95,15 +95,15 @@ export const recoverPass = async (req, res) => {
     }
 }
 
-export const restorePass = async(req, res, next) => {
+export const restorePass = async (req, res, next) => {
     try {
 
-        const {token, password: newPassword} = req.body;
+        const { token, password: newPassword } = req.body;
 
         const decodedToken = jwt.verify(token, config.jwtPrivateKey);
 
         if (!newPassword || newPassword.trim() === "") {
-            return res.send({status: "error", message: "The password cannot be empty"});
+            return res.send({ status: "error", message: "The password cannot be empty" });
         }
 
         const email = decodedToken.user;
@@ -116,15 +116,15 @@ export const restorePass = async(req, res, next) => {
         }
 
         if (isValidPassword(user, newPassword)) {
-            return res.send({status: "error", message: "The password cannot be the same"});
+            return res.send({ status: "error", message: "The password cannot be the same" });
         }
 
         const hashedPass = createHash(newPassword)
-        const result = await userManager.updateUser({ email: email }, {password: hashedPass});
+        const result = await userManager.updateUser({ email: email }, { password: hashedPass });
 
-        return res.status(200).json({status: "success", message: "The password was changed successfully."});
+        return res.status(200).json({ status: "success", message: "The password was changed successfully." });
 
-    } catch(error) {
+    } catch (error) {
 
         if (error.name == 'TokenExpiredError') {
             return res.status(401).json({ error: 'Token has expired.' });
@@ -159,56 +159,31 @@ export const gitHubCallback = async (req, res) => {
     res.redirect("/github");
 };
 
-/*
-postSwapUserClass = async(req, res, next) => {
+
+export const swapUserClass = async (req, res, next) => {
     try {
-        req.logger.http(`${req.method} at ${req.url} - ${new Date().toLocaleDateString()}`);
 
-        let reqEmail = req.user.user.email;
+        const email = req.params.uid;
 
-        let email = req.params.uid;
+        let dbUser = await userManager.findOne(email);
+        req.logger.debug(`Get user data from: ${email}`);
 
-        if (reqEmail != email) CustomError.createError({ statusCode: 401, name: "Admin users cant swap roles", cause: generateErrorInfo.unauthorized(), code: 6});
+        if (dbUser.role === "admin") {
+            return res.status(403).json({ status: "error", message: "Admin users cant swap roles" });
 
-        let dbUser = await um.getOne({email});
-        req.logger.debug("Consegui los datos del usuario");
-        
-        let user = {
-            first_name: dbUser.first_name,
-            last_name: dbUser.last_name,
-            role: dbUser.role,
-            email: dbUser.email,
-            cart: dbUser.cart
-        }
-
-        if (dbUser.role == "admin") CustomError.createError({ statusCode: 401, name: "Admin users cant swap roles", cause: generateErrorInfo.unauthorized(), code: 6});
-        if (dbUser.role == "user") {
+        } else if (dbUser.role === "user") {
             dbUser.role = "premium";
-            let result = await um.editOne(email, dbUser);
+            const changedRole = await userManager.updateUser(email, dbUser);
+            return res.status(200).json({ status: "success", message: `The Role was changed successfully to ${dbUser.role}.`});
 
-            user.role = dbUser.role;
-            let print = await um.getOne({email});
-            req.logger.debug(print);
-
-            let token = jwt.sign({user}, config.jwtKey, {expiresIn: "24h"});
-            if (result.acknowledged) return res.cookie('coderCookieToken', token, {maxAge: 1000*60*24, httpOnly: true}).send({status: "Ok", message: "Rol actualizado"});
-
-            CustomError.createError({ statusCode: 500, name: "Couldn't swap roles", cause: generateErrorInfo.dbNotChanged(), code: 3});
-        }
-        if (dbUser.role == "premium") {
+        } else if (dbUser.role === "premium") {
             dbUser.role = "user";
-            let result = await um.editOne(email, dbUser);
-            
-            user.role = dbUser.role;
-            let print = await um.getOne({email});
-            req.logger.debug(print);
+            const changedRole = await userManager.updateUser(email, dbUser);
+            return res.status(200).json({ status: "success", message: `The Role was changed successfully to ${dbUser.role}.`});
 
-            let token = jwt.sign({user}, config.jwtKey, {expiresIn: "24h"});
-            if (result.acknowledged) return res.cookie('coderCookieToken', token, {maxAge: 1000*60*24, httpOnly: true}).send({status: "Ok", message: "Rol actualizado"});
-
-            CustomError.createError({ statusCode: 500, name: "Couldn't swap roles", cause: generateErrorInfo.dbNotChanged(), code: 3});
         }
+        
     } catch (error) {
         next(error)
     }
-} */
+}
