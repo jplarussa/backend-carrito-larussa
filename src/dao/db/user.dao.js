@@ -21,7 +21,9 @@ export default class UserManager {
     };
 
     async updateUser(userId, userToReplace) {
-        const result = await userModel.updateOne(userId, userToReplace);
+        const filter = {email: userId}
+        const update = { $set: userToReplace };
+        const result = await userModel.updateOne(filter, update);
         return result;
     }
 

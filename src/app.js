@@ -84,7 +84,7 @@ app.use('/loggerTest', logRouter)
 
 
 //MIDDLEWARE ERROR
-app.use(errorHandler);
+// app.use(errorHandler);
 
 const httpServer = app.listen(config.port, () => {
     customLogger.http(`Express Server listening  on the port: ${config.port}`);
