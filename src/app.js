@@ -16,6 +16,9 @@ import { addLogger, customLogger } from './config/logger.js';
 // Passport
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
+// Swagger Documentation
+import swaggerDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
 // Routers
 import productsRouter from "./routes/products.router.js";
@@ -31,6 +34,23 @@ import logRouter from './routes/log.router.js';
 
 //Declare Express server.
 const app = express();
+
+//Swagger Doc
+const swaggerOpts = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "JP Backend Ecommerce documentation",
+            description: "Api docs with swagger",
+            version: "1.0.0"
+        }
+    },
+    apis: ['./src/docs/**/*.yaml']
+}
+const specs = swaggerDoc(swaggerOpts);
+
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
 
 //Prepare server settings to receive JSON objects
 app.use(express.json());
@@ -84,7 +104,7 @@ app.use('/loggerTest', logRouter)
 
 
 //MIDDLEWARE ERROR
-// app.use(errorHandler);
+app.use(errorHandler);
 
 const httpServer = app.listen(config.port, () => {
     customLogger.http(`Express Server listening  on the port: ${config.port}`);
