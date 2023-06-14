@@ -1,0 +1,238 @@
+paths:
+  /api/products/:
+    get:
+      summary: Get all available products based on filters and pagination
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: category
+          required: false
+          description: Product category
+          explode: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          description: Number of products per page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: status
+          required: false
+          description: Product status (true or false)
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          required: false
+          description: Sort products in ascending or descending order
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: page
+          in: query
+          required: false
+          description: Current page number
+          schema:
+            type: string
+            default: 1
+
+      responses:
+        "200":
+          description: Successful operation. Products found in the database based on the provided filters.
+        "500":
+          description: Failed operation. An unexpected error occurred.
+
+    post:
+      summary: Create a product with certain fields provided in the request body
+      tags:
+        - Products
+      requestBody:
+        description: Create a new product
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: Successful operation. Product created successfully.
+
+  /api/products/{pid}:
+    get:
+      summary: Find a product by ID
+      tags:
+        - Products
+      description: Return a Product object
+      parameters:
+        - name: pid
+          in: path
+          description: ID of the object to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+    put:
+      summary: Update a product by ID
+      tags:
+        - Products
+      description: Update a Product object and return the status
+      parameters:
+        - name: pid
+          in: path
+          description: ID of the object to return
+          required: true
+          schema:
+            type: string
+            format: string            
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/createProduct"
+
+      responses:
+        "200":
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "401":
+          description: The product doesn't exist
+        "403":
+          description: Forbidden, product Owner or Admin role required      
+
+    delete:
+      summary: Delete a product by ID
+      tags:
+        - Products
+      description: Return the ID of the deleted Product and an OK status
+      parameters:
+        - name: pid
+          in: path
+          description: ID of the object to return
+          required: true
+          schema:
+            type: string
+            format: string      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Error deleting product.
+        "401":
+          description: The product doesn't exist
+        "403":
+          description: Forbidden, product Owner or Admin role required            
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Auto-generated MongoDB ID
+        title:
+          type: string
+          description: Product name
+        description:
+          type: string
+          description: Product description
+        price:
+          type: number
+          description: Product price
+        code:
+          type: string
+          description: Alphanumeric product code
+        status:
+          type: boolean
+          description: Product availability status
+        stock:
+          type: number
+          description: Quantity of available product units
+        category:
+          type: string
+          description: Product category
+        thumbnail:
+          type: array
+          description: Product image URL
+        owner:
+          type: string
+          description: User who created the product 
+      example:
+        _id: ObjectId("641a1ac4a2719e46d92119cb")
+        title: Samsung Galaxy S21
+        description: High-end smartphone with excellent camera
+        price: 899.99
+        code: 002
+        status: true
+        stock: 25
+        category: electronics
+        thumbnail: ["/img/products/GalaxyS21.jpg"]
+        owner: admin                 
+  requestBodies:
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Product name
+        description:
+          type: string
+          description: Product description
+        price:
+          type: number
+          description: Product price
+        code:
+          type: string
+          description: Alphanumeric product code
+        status:
+          type: boolean
+          description: Product availability status
+        stock:
+          type: number
+          description: Quantity of available product units
+        category:
+          type: string
+          description: Product category
+        thumbnail:
+          type: array
+          description: Product image URL
+        owner:
+          type: string
+          description: User who created the product    
+      example:
+        title: Test Product 100
+        description: This is a test product
+        price: 45
+        code: 928
+        status: true
+        stock: 25
+        category: fruits
+        thumbnail: ["http://thepictures.com/testProduct.jpg"]
+        owner: admin
