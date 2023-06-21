@@ -25,7 +25,7 @@ import productsRouter from "./routes/products.router.js";
 import cartRouter from "./routes/cart.router.js";
 import viewsRouter from './routes/views.router.js';
 import usersViewsRouter from './routes/user.views.router.js';
-import sessionsRouter from './routes/auth.router.js';
+import sessionsRouter from './routes/session.router.js';
 import githubLoginRouter from './routes/github-login.views.router.js';
 import ticketsRouter from './routes/tickets.router.js'
 import emailRouter from './routes/email.router.js';

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, gitHubCallback, getCurrent, logout, recoverPass, restorePass, swapUserClass } from '../controllers/auth.controller.js';
+import { register, login, gitHubCallback, getCurrent, logout, recoverPass, restorePass, swapUserClass } from '../controllers/session.controller.js';
 import { passportCall } from '../util.js';
 
 const router = Router();
