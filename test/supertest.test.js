@@ -35,7 +35,7 @@ describe("Integration test - Ecommerce App", () => {
 
         it("Login user and set cookie", async function(){
 
-            const result = await requester.post("/api/sessions/login").send({ username: this.mockUser.email, password: this.mockUser.password});
+            const result = await requester.post("/api/sessions/login").send({ email: this.mockUser.email, password: this.mockUser.password});
             const cookieResult = result.headers['set-cookie'][0];
 
             expect(result.statusCode).to.be.eql(200)
