@@ -37,7 +37,7 @@ describe("Integration test - Ecommerce App", () => {
             expect(_body.message).to.be.deep.equal('Success')
         });
 
-        it("Login user and set cookie- POST /api/sessions/login", async function () {
+        it("Should login user and set cookie - POST /api/sessions/login", async function () {
 
             const result = await requester.post("/api/sessions/login").send({ email: this.mockUser.email, password: this.mockUser.password });
             const cookieResult = result.headers['set-cookie'][0];
@@ -67,7 +67,7 @@ describe("Integration test - Ecommerce App", () => {
 
         describe("User is logged and have role", () => {
 
-            it("Create a product if you are logged in and with admin or premium role - POST /api/products/", async function () {
+            it("Should create a product if you are logged in and with admin or premium role - POST /api/products/", async function () {
 
                 const productMock = generateMockProduct()
                 expect(this.cookie.name).to.be.ok.and.eql('jwtCookieToken');
