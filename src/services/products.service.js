@@ -1,9 +1,9 @@
 import { customLogger } from "../config/logger.js";
-import ProductDao from "../dao/db/products.dao.js";
+// import ProductDao from "../dao/db/products.dao.js";
+import { ProductService } from "../repository/index.repository.js";
 import CustomError from "../middlewares/errors/CustomError.js"
 import { updateQuantityInCartErrorInfo, createProductErrorInfo } from "../middlewares/errors/messages/error.messages.js";
 
-const productDao = new ProductDao();
 
 export default class ProductsService {
 
@@ -34,7 +34,7 @@ export default class ProductsService {
             options.sort = { price: sort };
         }
 
-        const products = await productDao.getProducts(filters, options);
+        const products = await ProductService.getProducts(filters, options);
 
         return products;
     }
@@ -42,7 +42,7 @@ export default class ProductsService {
     async getProductById(id) {
         if (!id) throw new Error('Product ID is required.');
 
-        const product = await productDao.getProductById(id)
+        const product = await ProductService.getProductById(id)
         return product;
     }
 
@@ -59,7 +59,7 @@ export default class ProductsService {
             })
         }
 
-        const product = await productDao.createProduct({ title, description, code, price, stock, category, thumbnails, owner });
+        const product = await ProductService.createProduct({ title, description, code, price, stock, category, thumbnails, owner });
         
         customLogger.info(`Product Added: ${product}`);
 
@@ -70,14 +70,14 @@ export default class ProductsService {
 
         if (!productId) throw new Error('Product ID is required.');
 
-        const product = await productDao.updateProduct(productId, productFields);
+        const product = await ProductService.updateProduct(productId, productFields);
         return product;
     }
 
     async deleteProduct(id) {
         if (!id) throw new Error('Product ID is required.');
 
-        const product = await productDao.deleteProduct(id);
+        const product = await ProductService.deleteProduct(id);
 
         return product;
     }
