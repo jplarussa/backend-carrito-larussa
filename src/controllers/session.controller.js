@@ -1,12 +1,12 @@
 import { createHash, isValidPassword, generateJwtToken } from '../util.js';
-import UserManager from '../dao/db/user.dao.js';
+import UserService from "../services/users.service.js";
 import UserDTO from '../dao/DTO/user.dto.js';
 import { transporter } from './email.controller.js';
 import jwt from 'jsonwebtoken';
 import config from '../config/config.js';
 
 
-const userManager = new UserManager();
+const userService = new UserService();
 
 export const register = async (req, res) => {
     try {
@@ -67,7 +67,7 @@ export const recoverPass = async (req, res) => {
     try {
 
         const { email } = req.body;
-        const user = await userManager.findOne(email);
+        const user = await userService.findOne(email);
         req.logger.info(`Creating a restore pass token for: ${email}`);
 
         if (!user) {
@@ -108,7 +108,7 @@ export const restorePass = async (req, res, next) => {
         }
 
         const email = decodedToken.user;
-        const user = await userManager.findOne(email);
+        const user = await userService.findOne(email);
         req.logger.info(`Check if user exist for: ${email}`);
 
 
@@ -121,7 +121,7 @@ export const restorePass = async (req, res, next) => {
         }
 
         const hashedPass = createHash(newPassword)
-        const result = await userManager.updateUser({ email: email }, { password: hashedPass });
+        const result = await userService.updateUser({ email: email }, { password: hashedPass });
 
         return res.status(200).json({ status: "success", message: "The password was changed successfully." });
 
@@ -167,7 +167,7 @@ export const swapUserClass = async (req, res, next) => {
 
         const email = req.params.uid;
 
-        let dbUser = await userManager.findOne(email);
+        let dbUser = await userService.findOne(email);
         req.logger.debug(`Get user data from: ${email}`);
 
         if (dbUser.role === "admin") {
@@ -175,12 +175,12 @@ export const swapUserClass = async (req, res, next) => {
 
         } else if (dbUser.role === "user") {
             dbUser.role = "premium";
-            const changedRole = await userManager.updateUser(email, dbUser);
+            const changedRole = await userService.updateUser(email, dbUser);
             return res.status(200).json({ status: "success", message: `The Role was changed successfully to ${dbUser.role}.`});
 
         } else if (dbUser.role === "premium") {
             dbUser.role = "user";
-            const changedRole = await userManager.updateUser(email, dbUser);
+            const changedRole = await userService.updateUser(email, dbUser);
             return res.status(200).json({ status: "success", message: `The Role was changed successfully to ${dbUser.role}.`});
 
         }

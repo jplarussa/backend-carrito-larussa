@@ -4,11 +4,11 @@ import passportLocal from 'passport-local'
 import GitHubStrategy from 'passport-github2';
 import { createHash, isValidPassword } from '../util.js'
 import config from './config.js';
-import UserManager from '../dao/db/user.dao.js';
+import UserService from "../services/users.service.js";
 import CartsService from '../services/carts.service.js';
 import UserDTO from '../dao/DTO/user.dto.js';
 
-const userManager = new UserManager();
+const userService = new UserService();
 const cartsService = new CartsService();
 
 const LocalStrategy = passportLocal.Strategy;
@@ -29,7 +29,7 @@ const initializePassport = () => {
 
             try {
 
-                const userExists = await userManager.findOne(username);
+                const userExists = await userService.findOne(username);
 
                 if (userExists) {
                     req.logger.warn(`User already exist. username: ${username}`);
@@ -48,7 +48,7 @@ const initializePassport = () => {
                     user.role = 'admin';
                 }
 
-                const result = await userManager.createUser(user);
+                const result = await userService.createUser(user);
 
                 return done(null, result, { messages: `User created successfully, ID: ${result.id}` });
 
@@ -63,7 +63,7 @@ const initializePassport = () => {
 
             try {
 
-                const user = await userManager.findOne(username);
+                const user = await userService.findOne(username);
 
                 if (!user) {
                     req.logger.warn(`User doesn't exists with username: ${username}`);
@@ -128,7 +128,7 @@ const initializePassport = () => {
             req.logger.info(`Profile obtained from user: ${profile}`);
 
             try {
-                const user = await userManager.findOne({
+                const user = await userService.findOne({
                     email: profile._json.email
                 });
 
@@ -146,7 +146,7 @@ const initializePassport = () => {
                         loggedBy: "GitHub"
                     };
 
-                    const result = await userManager.createUser(newUser);
+                    const result = await userService.createUser(newUser);
                     return done(null, result);
 
                 } else {
@@ -165,7 +165,7 @@ const initializePassport = () => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            let user = await userManager.findById(id);
+            let user = await userService.findById(id);
             done(null, user);
 
         } catch (error) {

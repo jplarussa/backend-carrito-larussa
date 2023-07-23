@@ -28,6 +28,7 @@ import usersViewsRouter from './routes/user.views.router.js';
 import sessionsRouter from './routes/session.router.js';
 import githubLoginRouter from './routes/github-login.views.router.js';
 import ticketsRouter from './routes/tickets.router.js'
+import usersRouter from './routes/users.router.js'
 import emailRouter from './routes/email.router.js';
 import mockingRouter from './routes/mock.router.js';
 import logRouter from './routes/log.router.js';
@@ -95,6 +96,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use('/api/tickets', ticketsRouter);
+app.use('/api/users', usersRouter);
 app.use("/users", usersViewsRouter);
 app.use("/github", githubLoginRouter);
 app.use("/api/mail", emailRouter);
