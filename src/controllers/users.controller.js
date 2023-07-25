@@ -28,3 +28,21 @@ export const uploadDocuments = async (req, res) => {
         next(error)
     }
 };
+
+export const findById = async (req, res) => {
+    try {
+
+        const user = await userService.findById(req.user.id);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return user;
+        
+    } catch (error) {
+        req.logger.warn(`Error getting user: ${error.message}`);
+        next(error)
+    }
+}
+

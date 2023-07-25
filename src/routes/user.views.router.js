@@ -36,11 +36,13 @@ router.get('/recoverLanding/:token', (req, res)=>{
 
 router.get('/', passportCall('jwt'), (req, res)=>{
 
-    res.redirect("/products");
+    res.redirect("/products");  
 })
 
 router.get("/error", (req, res)=>{
     res.render("error");
 });
+
+
 
 export default router;
