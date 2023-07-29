@@ -1,4 +1,7 @@
 import { UserRepositoryWithDao } from "../repository/index.repository.js";
+import Logger from '../config/logger.js'
+
+const log = new Logger();
 
 export default class UserService {
 
@@ -69,11 +72,11 @@ export default class UserService {
 
             const updatedUser = await UserRepositoryWithDao.updateUser(userId, user);
 
-            // req.logger.info(`Files uploaded successfully: User ID ${userId}`);
+            log.logger.info(`Files uploaded successfully: User ID ${userId}`);
             return updatedUser;
 
         } catch (error) {
-            req.logger.warn(`Error uploading files: ${error.message}`);
+            log.logger.warn(`Error uploading files: ${error.message}`);
             next(error);
         }
     };
@@ -87,7 +90,7 @@ export default class UserService {
         try {
 
             let user = await UserRepositoryWithDao.findOne(email);
-            req.logger.debug(`Get user data from: ${email}`);
+            log.logger.debug(`Get user data from: ${email}`);
 
             if (!user) {
                 return res.status(401).json({ status: 'error', error: "Can't find user." });
@@ -121,7 +124,7 @@ export default class UserService {
                 }
             }
         } catch (error) {
-            req.logger.warn(`Error updating user role: ${error.message}`);
+            log.logger.warn(`Error updating user role: ${error.message}`);
             next(error);
         }
     };

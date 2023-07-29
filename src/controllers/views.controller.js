@@ -29,7 +29,8 @@ export const getProducts = async (req, res) => {
             products,
             user,
             admin,
-            premium
+            premium,
+            active: {products: true}
         });
 
     } catch (error) {
@@ -45,7 +46,36 @@ export const getPaginatedCart = async (req, res) => {
         res.render("carts", {
             carts: carts.docs,
             currentPage: carts.page,
-            totalPages: carts.totalPages
+            totalPages: carts.totalPages,
+            active: {carts: true}
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: "Error " + error.message });
+    }
+};
+
+export const getCart = async (req, res) => {
+
+    try {
+        let admin, premium = null;
+
+        const user = await userService.findOne(req.user.email)
+        const cart = await cartsService.getCart(user.cart);
+        const products = cart.products;
+        const cartId = user.cart._id;
+
+        admin = (user.role === "admin") ? true : false;
+        premium = (user.role === "premium") ? true : false;
+
+        res.render("carts", {
+            cartId,
+            products,
+            user,
+            admin,
+            premium,
+            active: {cart: true}
         });
 
     } catch (error) {
@@ -132,7 +162,8 @@ export const uploads = async (req, res) => {
     uploads,
     user,
     admin,
-    premium
+    premium,
+    active: {uploads: true}
 });
 
 };

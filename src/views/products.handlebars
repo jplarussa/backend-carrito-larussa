@@ -8,7 +8,7 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-10">
-      <h1 class="text-center py-5 text-primary">Products</h1>
+      <h2 class="text-center py-5 text-primary">Products</h2>
       <div class="row" id="product-list">
         {{#each products.docs}}
         <div class="col-md-4 mb-4">
@@ -67,8 +67,8 @@
   }
 
   function addToCart(productId) {
-    fetch(`/api/carts/641bdada984cb1cc66e9fc8f/product/${productId}`, {
-      method: 'POST',
+    fetch(`/api/carts/{{user.cart}}/products/${productId}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productId }),
     })
