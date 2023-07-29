@@ -80,9 +80,8 @@ const initializePassport = () => {
                     const cart = await cartsService.createCart();
 
                     user.cart = cart._id;
-                    await user.save();
+                    await userService.updateUser(username, user)
                 }
-
 
                 return done(null, user, { messages: "Login Success." });
 

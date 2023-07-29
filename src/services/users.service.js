@@ -16,8 +16,17 @@ export default class UserService {
 
     async findOne(email) {
 
-        const result = await UserRepositoryWithDao.findOne(email);
-        return result;
+        try {
+            const result = await UserRepositoryWithDao.findOne(email);
+            if (!email) {
+                return res.status(401).json({ status: 'error', error: "Can't find user." });
+            }
+            
+            return result;
+
+        } catch (error) {
+            next(error);
+        }
     };
 
     async updateUser(userId, userToReplace) {
@@ -42,7 +51,7 @@ export default class UserService {
         }
 
         try {
-            const user = await UserRepositoryWithDao.findById(userId);
+            const user = await UserRepositoryWithDao.findOne(userId);
             if (!user) {
                 return res.status(401).json({ status: 'error', error: "Can't find user." });
             }
@@ -60,7 +69,7 @@ export default class UserService {
 
             const updatedUser = await UserRepositoryWithDao.updateUser(userId, user);
 
-            req.logger.info(`Files uploaded successfully: User ID ${userId}`);
+            // req.logger.info(`Files uploaded successfully: User ID ${userId}`);
             return updatedUser;
 
         } catch (error) {

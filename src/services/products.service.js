@@ -1,9 +1,10 @@
-import { customLogger } from "../config/logger.js";
+import Logger from '../config/logger.js'
 // import ProductDao from "../dao/db/products.dao.js";
 import { ProductRepositoryWithDao } from "../repository/index.repository.js";
 import CustomError from "../middlewares/errors/CustomError.js";
 import { updateQuantityInCartErrorInfo, createProductErrorInfo } from "../middlewares/errors/messages/error.messages.js";
 
+const log = new Logger();
 
 export default class ProductsService {
 
@@ -61,7 +62,7 @@ export default class ProductsService {
 
         const product = await ProductRepositoryWithDao.createProduct({ title, description, code, price, stock, category, thumbnails, owner });
         
-        customLogger.info(`Product Added: ${product}`);
+        log.logger.info(`Product Added: ${product}`);
 
         return product;
     }

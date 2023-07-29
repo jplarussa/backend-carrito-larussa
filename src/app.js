@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 // Errors
 import errorHandler from './middlewares/errors/index.js'
-import { addLogger, customLogger } from './config/logger.js';
+import Logger from './config/logger.js';
 
 // Passport
 import passport from 'passport';
@@ -32,6 +32,8 @@ import usersRouter from './routes/users.router.js'
 import emailRouter from './routes/email.router.js';
 import mockingRouter from './routes/mock.router.js';
 import logRouter from './routes/log.router.js';
+
+const log = new Logger();
 
 //Declare Express server.
 const app = express();
@@ -57,7 +59,7 @@ app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // Define logger middleware
-app.use(addLogger);
+app.use(log.addLogger);
 
 // Define path for static content
 app.use(express.static(path.join(__dirname +'/public')));
@@ -109,7 +111,7 @@ app.use('/loggerTest', logRouter)
 app.use(errorHandler);
 
 const httpServer = app.listen(config.port, () => {
-    customLogger.http(`Express Server listening  on the port: ${config.port}`);
+    log.logger.info(`Express Server listening  on the port: ${config.port}`);
 })
 // Initialize websocket Server
 setupWebSocket(httpServer);
@@ -118,9 +120,9 @@ setupWebSocket(httpServer);
 const connectMongoDB = async () => {
     try {
         await mongoose.connect(config.mongoUrl);
-        customLogger.info("Connection to DB Succed");
+        log.logger.info("Connection to DB Succed");
     } catch (error) {
-        customLogger.fatal(`Error on connection to DB. ${error}`);
+        log.logger.fatal(`Error on connection to DB. ${error}`);
     }
 
 }

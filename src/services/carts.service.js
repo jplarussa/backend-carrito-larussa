@@ -4,7 +4,9 @@ import TicketService from "./tickets.service.js";
 import { CartsRepositoryWithDao } from "../repository/index.repository.js";
 import CustomError from "../middlewares/errors/CustomError.js"
 import { updateQuantityInCartErrorInfo, generateErrorInfo } from "../middlewares/errors/messages/error.messages.js";
-import { customLogger } from "../config/logger.js";
+import Logger from '../config/logger.js'
+
+const log = new Logger();
 
 // const cartsDao = new CartDao();
 const productService = new ProductsService();
@@ -41,7 +43,7 @@ export default class CartsService {
         }
 
         const productInCart = await CartsRepositoryWithDao.findProduct(cartId, productId);
-        customLogger.debug(`Product to update in cart ${productInCart}`);
+        log.logger.debug(`Product to update in cart ${productInCart}`);
 
         if (!productInCart) {
 
@@ -72,7 +74,7 @@ export default class CartsService {
     }
 
     async purchaseCart(cartId, user) {
-        customLogger.info(`User ${user} wants to finalize his purchase`);
+        log.logger.info(`User ${user} wants to finalize his purchase`);
 
         if (!cartId) throw new Error('Cart ID is required.');
 

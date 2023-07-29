@@ -19,18 +19,11 @@ export const getChat = async (req, res) => {
 export const getProducts = async (req, res) => {
     try {
         const products = await productsService.getProducts(req.query);
-
         let user, admin, premium = null;
 
-        if (req.user) {
-            user = req.user;
-        }
-        if (req.user.role === "admin") {
-            admin = true;
-        }
-        if (req.user.role === "premium") {
-            premium = true;
-        }
+            user = await userService.findOne(req.user.email)
+            admin = (user.role === "admin") ? true : false;
+            premium = (user.role === "premium") ? true : false;
 
         res.render("products", {
             products,
@@ -125,17 +118,21 @@ export const deleteRealTimeProduct = async (req, res) => {
 
 export const uploads = async (req, res) => {
 
-        let user = await userService.findOne(req.user.email);
-        console.log(user);
+    let user = await userService.findOne(req.user.email);
 
-    let isAdmin = (user.role === 'admin') ? true : false;
-    let isPremium = (user.role === 'premium') ? true : false;
-    let isUser = (user.role === 'user') ? true : false;
-    try {
-        let uploads = user.documents;
-        res.render('uploads', { uploads, user, isAdmin, isPremium, isUser });
-    } catch (err) {
-        let uploads = [];
-        res.render('uploads', { uploads, user, isAdmin, isPremium, isUser });
-    }
+    let admin, premium = null;
+    let uploads = [];
+
+    uploads = user.documents;
+
+    admin = (user.role === "admin") ? true : false;
+    premium = (user.role === "premium") ? true : false;
+
+    res.render("uploads", {
+    uploads,
+    user,
+    admin,
+    premium
+});
+
 };

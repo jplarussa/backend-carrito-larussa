@@ -15,7 +15,7 @@ export const swapUserRole = async (req, res, next) => {
     }
 }
 
-export const uploadDocuments = async (req, res) => {
+export const uploadDocuments = async (req, res, next) => {
     try {
         let { uid } = req.params;
         let { reference } = req.body;

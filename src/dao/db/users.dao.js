@@ -16,7 +16,7 @@ export default class UserDao {
 
     async findOne(email) {
 
-        const result = await usersModel.findOne({email});
+        const result = await usersModel.findOne({email}).lean();
         return result;
     };
 
