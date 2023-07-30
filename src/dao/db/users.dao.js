@@ -1,4 +1,5 @@
 import { usersModel } from "./models/users.model.js";
+import GetUserDTO from "../DTO/getUser.dto.js"
 
 export default class UserDao {
 
@@ -11,7 +12,7 @@ export default class UserDao {
     async getAll() {
 
         const users = await usersModel.find();
-        return users.map(user => user.toObject());
+        return users.map(user => new GetUserDTO(user.toObject()));
     };
 
     async findOne(email) {
@@ -31,5 +32,17 @@ export default class UserDao {
 
         const result = await usersModel.findById({_id: id});
         return result;
+    };
+
+    async deleteInactiveUsers(days) {
+            // First find the users that haven't logged in in the last X days.
+            const inactiveUsers = await usersModel.find({ last_connection: { $lt: new Date(Date.now() - (days * 24 * 60 * 60 * 1000)) } }).lean();
+
+            // Delete the users that haven't logged in in the last X days.
+            await usersModel.deleteMany({ last_connection: { $lt: new Date(Date.now() - (days * 24 * 60 * 60 * 1000)) } });
+
+            const inactiveUsersDTO = inactiveUsers.map(user => new GetUserDTO(user));
+            
+            return inactiveUsersDTO;
     };
 }

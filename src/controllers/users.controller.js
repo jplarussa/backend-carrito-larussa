@@ -8,8 +8,8 @@ export const swapUserRole = async (req, res, next) => {
         const email = req.params.uid;
 
         let dbUser = await userService.swapUserRole(email);
-        res.send( { status: 'success', data: dbUser } );
-        
+        res.send({ status: 'success', data: dbUser });
+
     } catch (error) {
         next(error)
     }
@@ -20,7 +20,7 @@ export const uploadDocuments = async (req, res, next) => {
         let { uid } = req.params;
         let { reference } = req.body;
         let { files } = req;
-        
+
         const user = await userService.uploadFiles(uid, files, reference);
         res.redirect('/uploads');
 
@@ -39,10 +39,32 @@ export const findById = async (req, res) => {
         }
 
         return user;
-        
+
     } catch (error) {
         req.logger.warn(`Error getting user: ${error.message}`);
         next(error)
     }
 }
+
+export const getUsers = async (req, res) => {
+    try {
+        const users = await userService.getAll();
+        res.send({ status: 'success', data: users });
+
+    } catch (err) {
+        res.status(500).send({ status: 'error', message: 'An error ocurred while trying to retrieve the all users.' });
+    }
+};
+
+export const deleteInactiveUsers = async (req, res) => {
+    try {
+        const users = await userService.deleteInactiveUsers();
+        res.send({ status: 'success', data: users });
+
+    } catch (err) {
+        res.status(500).send({ status: 'error', message: 'An error ocurred while trying to delete the inactive users.' });
+    }
+};
+
+
 

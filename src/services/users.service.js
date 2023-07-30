@@ -1,5 +1,6 @@
 import { UserRepositoryWithDao } from "../repository/index.repository.js";
 import Logger from '../config/logger.js'
+import config from "../config/config.js";
 
 const log = new Logger();
 
@@ -150,6 +151,19 @@ export default class UserService {
             }
         } catch (error) {
             log.logger.warn(`Error updating user last_connection: ${error.message}`);
+            next(error);
+        }
+    };
+
+    async deleteInactiveUsers() {
+        try {
+            const days = config.getInactiveUsersDays;
+            const users = await UserRepositoryWithDao.deleteInactiveUsers(days);
+
+            return users;
+
+        } catch (error) {
+            log.logger.warn(`Error deleting inactive users: ${error.message}`);
             next(error);
         }
     };

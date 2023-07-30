@@ -28,4 +28,16 @@ export default class UserRepository{
 
         return await this.dao.findById(id);
     };
+
+    async deleteInactiveUsers(days) {
+        try {
+            const users = await this.dao.deleteInactiveUsers(days);
+            return users;
+
+        } catch (error) {
+            log.logger.debug(`[UserRepository] Error deleting inactive users: ${error}`);
+            throw new Error("Error deleting inactive users");
+        }
+    };
+
 }
