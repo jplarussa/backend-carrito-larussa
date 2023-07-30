@@ -6,6 +6,8 @@ import path from 'path';
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let folder;
+        console.log("FILE QUE LLEGA:");
+        console.log(file);
         if (file.fieldname === "profiles") {
             folder = path.join(__dirname +'/uploads/profiles');
         } else if (file.fieldname === "products") {

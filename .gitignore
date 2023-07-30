@@ -2,3 +2,7 @@ node_modules
 .env.development
 .env.production
 .env.test
+
+src/uploads/documents/**
+src/uploads/products/**
+src/uploads/profiles/**

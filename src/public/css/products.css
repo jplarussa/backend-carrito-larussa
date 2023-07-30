@@ -26,3 +26,14 @@ body {
     background-color: #0069d9;
     border-color: #0062cc;
 }
+.btn-info {
+    background-color: #0dcaf0;
+    border-color: #31d2f2;
+}
+
+.btn-info:hover {
+    background-color: #0dcaf0;
+    border-color: #31d2f2;
+}
+
+

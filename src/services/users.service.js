@@ -101,26 +101,31 @@ export default class UserService {
 
             } else {
 
-                // check if user has uploaded all required documents
-                // Documents required: Identification, Proof of address, Proof of bank account
-                const requiredDocuments = ["Identification", "Proof of address", "Proof of bank account"];
+                // Check required documents por swap to Premium
+                const requiredDocuments = ["Identification", "Proof of address", "Statement of Account"];
+                console.log("USER DOCS");
+                console.log(user.documents);
+
                 const hasRequiredDocuments = requiredDocuments.every(document => {
                     return user.documents.some(doc => doc.reference.includes(document) && doc.status === "Uploaded");
                 });
-
+                console.log("HAS REQUIREDOCUM");
+                console.log(hasRequiredDocuments);
                 if (hasRequiredDocuments) {
 
                     if (user.role === "user") {
                         user.role = "premium";
                         const changedRole = await UserRepositoryWithDao.updateUser(email, user);
-                        return res.status(200).json({ status: "success", message: `The Role was changed successfully to ${user.role}.` });
+                        return changedRole
 
                     } else if (user.role === "premium") {
                         user.role = "user";
                         const changedRole = await UserRepositoryWithDao.updateUser(email, user);
-                        return res.status(200).json({ status: "success", message: `The Role was changed successfully to ${user.role}.` });
+                        return changedRole
                     }
 
+                }else {
+                    throw new Error('Something went wrong validating. Must have all 3 documents to swap role');
                 }
             }
         } catch (error) {

@@ -10,7 +10,12 @@
     <br>
     <div class="d-flex justify-content-center mb-3  ps-4">
         <button class="btn btn-primary mb-2" data-bs-target="#modalUploadsRequiredDocuments" data-bs-toggle="modal"
-            href="#modalUploadsRequiredDocuments"> Upload Required Documents</button>
+            href="#modalUploadsRequiredDocuments"> Upload Required Documents for Premium</button>
+    </div>
+    <br>
+    <div class="d-flex justify-content-center mb-3  ps-4">
+        <button class="btn btn-primary mb-2" data-bs-target="#modalUploadFiles" data-bs-toggle="modal"
+            href="#modalUploadFiles"> Upload Files</button>
     </div>
     <br>
     <ul>
@@ -38,7 +43,7 @@
     </ul>
 </div>
 
-<!-- Modal Upload Required Documents -->
+<!-- Modal Upload Required Documents for premium -->
 <div class="modal fade" id="modalUploadsRequiredDocuments" tabindex="-1"
     aria-labelledby="modalUploadsRequiredDocumentsLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -50,15 +55,14 @@
             <div class="modal-body">
 
                 <form action="/api/users/{{user.email}}/documents" method="POST" enctype="multipart/form-data">
-                    <label for="file" class="text-primary">Select a document file:</label>
-                    <input type="file" class="form-control" name="documents">
-                    <br>
+                    <label class="fw-bold mb-2" for="file">Select a document file:</label>
+                    <input type="file" class="form-control mb-2" name="documents">
                     <input type="radio" id="reference1" name="reference" value="Identification">
-                    <label for="reference1" class="text-primary">Identification</label><br>
+                    <label for="reference1">Identification</label><br>
                     <input type="radio" id="reference2" name="reference" value="Proof of address">
-                    <label for="reference2" class="text-primary">Proof of address</label><br>
-                    <input type="radio" id="reference3" name="reference" value="Proof of bank account">
-                    <label for="reference3" class="text-primary">Proof of bank account</label><br>
+                    <label for="reference2">Proof of address</label><br>
+                    <input type="radio" id="reference3" name="reference" value="Statement of Account">
+                    <label for="reference3">Statement of Account</label><br>
                     <br>
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
@@ -69,4 +73,45 @@
         </div>
     </div>
 </div>
+<!-- Modal Upload for files -->
+<div class="modal fade" id="modalUploadFiles" tabindex="-1" aria-labelledby="modalUploadFilesLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-primary" id="modalUploadFilesLabel">File Upload</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- 'profiles' -->
+                <form action="/api/users/{{user.email}}/documents" method="POST" enctype="multipart/form-data">
+                    <p class="fw-bold">Upload Profile Images:</p>
+                    <input type="file" class="form-control mb-2" name="profiles" multiple>
+                    <button type="submit" class="btn btn-primary">Upload Profiles</button>
+                </form>
+                <br>
+
+                <!-- 'products' -->
+                <form action="/api/users/{{user.email}}/documents" method="POST" enctype="multipart/form-data">
+                    <p class="fw-bold">Upload Product Images:</p>
+                    <input type="file" class="form-control mb-2" name="products" multiple>
+                    <button type="submit" class="btn btn-primary">Upload Products</button>
+                </form>
+                <br>
+
+                <!-- 'documents' -->
+                <form action="/api/users/{{user.email}}/documents" method="POST" enctype="multipart/form-data">
+                    <p class="fw-bold">Upload Documents:</p>
+                    <input type="file" class="form-control mb-2" name="documents" multiple>
+                    <button type="submit" class="btn btn-primary">Upload Documents</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeAdd">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
