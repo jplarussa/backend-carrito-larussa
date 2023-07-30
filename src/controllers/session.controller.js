@@ -40,6 +40,9 @@ export const login = async (req, res) => {
             maxAge: 1200000,
             httpOnly: true
         });
+
+        await userService.changeLastConnection(user.email);
+
         res.status(200).json({ success: true, redirectUrl: '/products' });
 
     } catch (error) {
@@ -56,11 +59,22 @@ export const getCurrent = async (req, res) => {
 }
 
 
-export const logout = async (req, res) => {
-    req.session.destroy();
-    res.clearCookie('jwtCookieToken');
-    req.logger.info('User logout');
-    res.redirect('/users/login');
+export const logout = async (req, res, next) => {
+    try {
+        if (!req.user) {
+        console.log("TODO MAL");
+
+    }
+        const user = req. user
+        await userService.changeLastConnection(user.email);
+
+        req.session.destroy();
+        res.clearCookie('jwtCookieToken');
+        req.logger.info('User logout');
+        res.redirect('/users/login');
+    } catch (error) {
+        next(error)
+    }
 }
 
 export const recoverPass = async (req, res) => {

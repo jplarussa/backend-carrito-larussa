@@ -24,7 +24,7 @@ export default class UserService {
             if (!email) {
                 return res.status(401).json({ status: 'error', error: "Can't find user." });
             }
-            
+
             return result;
 
         } catch (error) {
@@ -55,6 +55,7 @@ export default class UserService {
 
         try {
             const user = await UserRepositoryWithDao.findOne(userId);
+
             if (!user) {
                 return res.status(401).json({ status: 'error', error: "Can't find user." });
             }
@@ -103,14 +104,11 @@ export default class UserService {
 
                 // Check required documents por swap to Premium
                 const requiredDocuments = ["Identification", "Proof of address", "Statement of Account"];
-                console.log("USER DOCS");
-                console.log(user.documents);
 
                 const hasRequiredDocuments = requiredDocuments.every(document => {
                     return user.documents.some(doc => doc.reference.includes(document) && doc.status === "Uploaded");
                 });
-                console.log("HAS REQUIREDOCUM");
-                console.log(hasRequiredDocuments);
+
                 if (hasRequiredDocuments) {
 
                     if (user.role === "user") {
@@ -124,7 +122,7 @@ export default class UserService {
                         return changedRole
                     }
 
-                }else {
+                } else {
                     throw new Error('Something went wrong validating. Must have all 3 documents to swap role');
                 }
             }
@@ -134,4 +132,25 @@ export default class UserService {
         }
     };
 
+    async changeLastConnection(userId) {
+        if (!userId) {
+            throw new Error('UserId is required.');
+        }
+        try {
+            let user = await UserRepositoryWithDao.findOne(userId);
+
+            if (!user) {
+                throw new Error('User not found.');
+
+            } else {
+                user.last_connection = new Date();
+                const updatedUser = await UserRepositoryWithDao.updateUser(userId, user);
+
+                return updatedUser;
+            }
+        } catch (error) {
+            log.logger.warn(`Error updating user last_connection: ${error.message}`);
+            next(error);
+        }
+    };
 };

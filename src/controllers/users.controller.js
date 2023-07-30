@@ -20,10 +20,6 @@ export const uploadDocuments = async (req, res, next) => {
         let { uid } = req.params;
         let { reference } = req.body;
         let { files } = req;
-        console.log("LO QUE LLEGA");
-        console.log(uid);
-        console.log(reference);
-        console.log(files);
         
         const user = await userService.uploadFiles(uid, files, reference);
         res.redirect('/uploads');
