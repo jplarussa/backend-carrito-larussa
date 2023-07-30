@@ -35,9 +35,22 @@ export default class UserRepository{
             return users;
 
         } catch (error) {
-            log.logger.debug(`[UserRepository] Error deleting inactive users: ${error}`);
             throw new Error("Error deleting inactive users");
         }
     };
+    async deleteUser(uid) {
+        try {
+            const users = await this.dao.deleteUser(uid);
+            console.log("//////REPO//////");
+            console.log("UID");
+            console.log(uid);
+            console.log("users");
+            console.log(users);
+            return users;
 
-}
+        } catch (error) {
+            throw new Error(`Error deleting the user ${uid} users`);
+        }
+    };
+
+uid}

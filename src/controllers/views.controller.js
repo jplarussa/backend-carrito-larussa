@@ -21,16 +21,16 @@ export const getProducts = async (req, res) => {
         const products = await productsService.getProducts(req.query);
         let user, admin, premium = null;
 
-            user = await userService.findOne(req.user.email)
-            admin = (user.role === "admin") ? true : false;
-            premium = (user.role === "premium") ? true : false;
+        user = await userService.findOne(req.user.email)
+        admin = (user.role === "admin") ? true : false;
+        premium = (user.role === "premium") ? true : false;
 
         res.render("products", {
             products,
             user,
             admin,
             premium,
-            active: {products: true}
+            active: { products: true }
         });
 
     } catch (error) {
@@ -47,7 +47,7 @@ export const getPaginatedCart = async (req, res) => {
             carts: carts.docs,
             currentPage: carts.page,
             totalPages: carts.totalPages,
-            active: {carts: true}
+            active: { carts: true }
         });
 
     } catch (error) {
@@ -75,7 +75,7 @@ export const getCart = async (req, res) => {
             user,
             admin,
             premium,
-            active: {cart: true}
+            active: { cart: true }
         });
 
     } catch (error) {
@@ -159,11 +159,29 @@ export const uploads = async (req, res) => {
     premium = (user.role === "premium") ? true : false;
 
     res.render("uploads", {
-    uploads,
-    user,
-    admin,
-    premium,
-    active: {uploads: true}
-});
+        uploads,
+        user,
+        admin,
+        premium,
+        active: { uploads: true }
+    });
 
+};
+
+export const getUserManagement = async (req, res, next) => {
+
+    let admin, premium, users = null;
+    let user = await userService.findOne(req.user.email);
+
+    admin = (user.role === "admin") ? true : false;
+    premium = (user.role === "premium") ? true : false;
+    users = await userService.getAll();
+
+    res.render("userAdministration", {
+        users,
+        user,
+        admin,
+        premium,
+        active: { userM: true }
+    });
 };

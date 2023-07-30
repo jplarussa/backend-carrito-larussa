@@ -66,5 +66,22 @@ export const deleteInactiveUsers = async (req, res) => {
     }
 };
 
+export const deleteUser = async (req, res) => {
+    try {
+        let { uid } = req.params;
+        const user = await userService.deleteUser(uid);
+
+        console.log("//////services//////");
+        console.log("UID");
+        console.log(uid);
+        console.log("user");
+        console.log(user);
+
+        res.send( { status: 'success', data: user } );
+
+    } catch (err) {
+        res.status(500).send( { status: 'error', message: 'Error deleting the user.' } );
+    }
+};
 
 

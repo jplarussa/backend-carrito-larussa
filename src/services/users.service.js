@@ -182,4 +182,22 @@ export default class UserService {
             next(error);
         }
     };
+
+    async deleteUser(uid) {
+
+        try {
+            const userDeleted = await UserRepositoryWithDao.deleteUser(uid);
+            console.log("//////services//////");
+            console.log("UID");
+            console.log(uid);
+            console.log("userDeleted");
+            console.log(userDeleted);
+
+            return userDeleted;
+
+        } catch (error) {
+            log.logger.warn(`Error deleting the user: ${error.message}`);
+            next(error);
+        }
+    };
 };
