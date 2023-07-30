@@ -1,39 +1,15 @@
 import nodemailer from 'nodemailer';
 import config from '../config/config.js';
+import EmailService from '../services/emailservice.js';
 
-export const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    port: 587,
-    auth: {
-        user: config.gmailAccount,
-        pass: config.gmailAppPassword
-    }
-});
-
-transporter.verify(function (error, success) {
-    if (error) {
-        console.warn(`Transporter verify error:  ${error} `);
-    } else {
-        console.info(`Server is ready to take our messages.`);
-    }
-});
-
-const mailOptions = (receiver) => {
-    return {
-        from: "Coder Test " + config.gmailAccount,
-        to: receiver,
-        subject: "JPLARUSSA Test Mail Backend Programming project.",
-        html: "<div><h1>This is a test of sending emails with Nodemailer!</h1></div>",
-        attachments: []
-    }
-}
-
+const emailService = new EmailService();
 
 export const sendEmail = (req, res) => {
     try {
         const { email } = req.user
-        let finalEmail = email ? email : config.gmailAccount;
-        let result = transporter.sendMail(mailOptions(finalEmail), (error, info) => {
+        const { message, title } = req.body
+
+        emailService.sendEmail(email, message, title, (error, info) => {
             if (error) {
                 res.status(400).send({ message: "Error", payload: error });
             }
