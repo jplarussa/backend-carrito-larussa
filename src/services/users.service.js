@@ -1,6 +1,9 @@
 import { UserRepositoryWithDao } from "../repository/index.repository.js";
 import Logger from '../config/logger.js'
 import config from "../config/config.js";
+import EmailService from '../services/emailservice.js';
+
+const emailService = new EmailService();
 
 const log = new Logger();
 
@@ -158,9 +161,21 @@ export default class UserService {
     async deleteInactiveUsers() {
         try {
             const days = config.getInactiveUsersDays;
-            const users = await UserRepositoryWithDao.deleteInactiveUsers(days);
+            const usersDeleted = await UserRepositoryWithDao.deleteInactiveUsers(days);
 
-            return users;
+            usersDeleted.forEach(async (user) => {
+                const title = "Account Deletion Notice"
+                const message = `Hello ${user.first_name}!\nWe inform you that your account has been deleted due to inactivity.\nPlease know we apologize for the inconvenience.\nGreetings`
+                await emailService.sendEmail(user.email, message, title, (error, result) => {
+                    if (error) {
+                        throw {
+                            error: result.error,
+                            message: result.message
+                        }
+                    }
+                })
+            })
+            return usersDeleted;
 
         } catch (error) {
             log.logger.warn(`Error deleting inactive users: ${error.message}`);

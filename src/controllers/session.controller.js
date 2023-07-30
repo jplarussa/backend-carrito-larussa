@@ -1,11 +1,11 @@
 import { createHash, isValidPassword, generateJwtToken } from '../util.js';
 import UserService from "../services/users.service.js";
 import UserDTO from '../dao/DTO/user.dto.js';
-import { transporter } from './email.controller.js';
 import jwt from 'jsonwebtoken';
 import config from '../config/config.js';
+import EmailService from '../services/emailservice.js';
 
-
+const emailService = new EmailService();
 const userService = new UserService();
 
 export const register = async (req, res) => {
@@ -91,15 +91,19 @@ export const recoverPass = async (req, res) => {
         let restorePassToken = generateJwtToken(email, '1h')
         console.log(restorePassToken);
 
-        await transporter.sendMail({
-            from: 'jplarussa@gmail.com',
-            to: email,
-            subject: 'Restore password from JP Ecommerce',
-            html: `
-            <div style="display: flex; flex-direction: column; justify-content: center;  align-items: center;">
-            <h1>To reset your password click <a href="http://localhost:8080/users/recoverLanding/${restorePassToken}">here</a></h1>
-            </div>`
-        });
+        const from = 'jplarussa@gmail.com';
+        const subject = 'Restore password from JP Ecommerce';
+        const message = `<div style="display: flex; flex-direction: column; justify-content: center;  align-items: center;">
+        <h1>To reset your password click <a href="http://localhost:8080/users/recoverLanding/${restorePassToken}">here</a></h1>
+        </div>`;
+        emailService.sendEmail(from, email, message, subject, (error, result) => {
+            if(error){
+                throw {
+                    error:  result.error, 
+                    message: result.message
+                }
+            }
+        })
 
         req.logger.info(`Password reset token was sent`);
         res.status(200).json({ status: "success", message: `Password reset token was sent` })

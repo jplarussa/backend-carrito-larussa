@@ -33,7 +33,7 @@ export default class EmailService {
             from: "JP Store" + config.gmailAccount,
             to: receiver,
             subject: title ? title : "Email test from JP Store",
-            html: `<div><h1>${message ? message : "This is a test of sending emails with Nodemailer!"}</h1></div>`,
+            html: message ? message : `<div><h1>This is a test of sending emails with Nodemailer!</h1></div>`,
             attachments: []
         }
     }
