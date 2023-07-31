@@ -4,7 +4,6 @@ export default class TicketService {
     
     async createTicket(data){
         const { total, purchaser } = data;
-
         return TicketsRepositoryWithDao.createTicket({amount: total, purchaser: purchaser});
     }
 

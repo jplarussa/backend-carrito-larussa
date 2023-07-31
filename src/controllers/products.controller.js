@@ -1,6 +1,8 @@
 import ProductsService from "../services/products.service.js";
+import EmailService from "../services/emailservice.js";
 
 const productsService = new ProductsService();
+const emailService = new EmailService();
 
 export const getProducts = async (req, res) => {
     try {
@@ -83,12 +85,30 @@ export const deleteProduct = async (req, res) => {
         if (!existProduct) {
             return res.status(401).json({ status: "error", message: "The product doesn't exist" });
         }
+        const premium = req.user.role === "premium"
+        const existProductOwner = req.user.email === existProduct.owner;
 
-        if (req.user.role === "premium" && req.user.email !== existProduct.owner) {
+        if (premium && !existProductOwner) {
             return res.status(403).json({ status: "error", message: "Product Owner or Admin role required" });
         }
-
+        
         let productDeleted = await productsService.deleteProduct(productId);
+
+        if (premium && existProductOwner) {
+            const subject = `Your product ${existProduct.title} have been removed`
+            const message = `<div style="display: flex; flex-direction: column; justify-content: center;  align-items: center;">
+            Hello &nbsp;${existProduct.owner}!\nWe inform you that your product ${existProduct.title} have been removed by &nbsp;${req.user.email}.\nGreetings
+            </div>`;
+            await emailService.sendEmail(existProduct.owner, message, subject, (error, result) => {
+                if(error){
+                    throw {
+                        error:  result.error, 
+                        message: result.message
+                    }
+                }
+            })
+        }
+
         res.status(200).json(productDeleted);
 
     } catch (error) {

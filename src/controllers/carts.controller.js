@@ -90,12 +90,10 @@ export const emptyCart = async (req, res) => {
 export const purchaseCart = async (req, res) => {
     try{
 
-        req.logger.info(`User: ${req.user} wants to finalize his purchase`);
+        req.logger.info(`User: ${req.user.email} wants to finalize his purchase`);
         const cartId = req.params.cid;
-
-        const cart = await cartService.purchaseCart(cartId, req.user);
+        const cart = await cartService.purchaseCart(cartId, req.user.email);
         res.status(200).json(cart);
-
     } catch (error) {
         res.status(400).json({error: "Can't complete purchase "+error.message})
     }        

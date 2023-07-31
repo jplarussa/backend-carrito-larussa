@@ -61,7 +61,7 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="toastNotPremium" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-body">
-            User cannot become Premium! Please upload the documents required in the MyUploads section.
+            User cannot become Premium! Please upload the documents required in the Upload section.
         </div>
     </div>
 </div>
@@ -94,11 +94,10 @@
             window.location.reload();
         }).catch(err => {
             console.log(err);
-            let toastNotPremium = document.getElementById('toastNotPremium');
-            toastNotPremium.classList.add('show');
-            setTimeout(() => {
-                toastNotPremium.classList.remove('show');
-            }, 10000);
+                Swal.fire({
+                icon: "error",
+                text: `User cannot become Premium! Please upload the documents required in the Upload section.`
+            });
         });
     };
 
@@ -116,11 +115,10 @@
             window.location.reload();
         }).catch(err => {
             console.log(err);
-            let toast = document.getElementById('toastNotDelete');
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 10000);
+                Swal.fire({
+                icon: "error",
+                text: `Cannot delete user.`
+            });
         });
     };
 
@@ -138,11 +136,10 @@
             window.location.reload();
         }).catch(err => {
             console.log(err);
-            let toast = document.getElementById('toastNotDeleteInactive');
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 10000);
+                Swal.fire({
+                icon: "error",
+                text: `Cannot delete inactive users.`
+            });
         });
     };
 </script>

@@ -5,15 +5,15 @@ import { passportCall } from "../util.js";
 
 const router = Router();
 
-/* // Middleware de desarrollo para simular req.user, luego se saca
+/* // Development test middleware to simulate req.user, then output
 const simulateUserMiddleware = (req, res, next) => {
-    // Simular el objeto req.user según tus necesidades
+    // Mock the req.user object according to your needs
     req.user = {
-        first_name: 'Jean',
-        last_name: 'Pierre',
+        first_name: 'cocoliso',
+        last_name: 'cocoliso',
         email: 'jplarussa@gmail.com',
-        age: 50,
-        role: 'premium'
+        age: 60,
+        role: 'user'
     };
 
     next();
@@ -21,7 +21,7 @@ const simulateUserMiddleware = (req, res, next) => {
 
 router.get("/", getProducts);
 router.get("/:pid", getProductById);
-router.post("/", /* simulateUserMiddleware , */ passportCall('jwt'), RoleMiddleware.isAdminOrPremium, createProduct)    
+router.post("/", passportCall('jwt'), RoleMiddleware.isAdminOrPremium, createProduct)    
 router.put("/:pid", passportCall('jwt'), RoleMiddleware.isAdminOrPremium, updateProduct);
 router.delete("/:pid", passportCall('jwt'), RoleMiddleware.isAdminOrPremium, deleteProduct);
 

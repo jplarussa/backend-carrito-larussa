@@ -2,11 +2,14 @@ import { io } from '../websocket.js'
 import ProductsService from "../services/products.service.js";
 import CartsService from "../services/carts.service.js";
 import UserService from '../services/users.service.js';
+import TicketService from '../services/tickets.service.js';
 
 // Product and Cart manager initalizing
 const productsService = new ProductsService();
 const cartsService = new CartsService();
 const userService = new UserService();
+const ticketService = new TicketService();
+
 
 export const get = async (req, res) => {
     res.redirect("/users/login");
@@ -184,4 +187,27 @@ export const getUserManagement = async (req, res, next) => {
         premium,
         active: { userM: true }
     });
+};
+
+export const getTicketDetail = async (req, res) => {
+
+    let { code } = req.params;
+    let admin, premium = null;
+    let user = await userService.findOne(req.user.email);
+
+    admin = (user.role === "admin") ? true : false;
+    premium = (user.role === "premium") ? true : false;
+
+    try {
+        let ticket = await ticketService.getTicketById(code);
+        console.log("TICKET");
+        console.log(ticket);
+        if (ticket === null) {
+            res.render('error', { error: `404 - "Not Found: The ticket with the specified code does not exist.`, user, admin, premium});
+        } else {
+            res.render('ticketDetail', { ticket, user, admin, premium });
+        }
+    } catch (err) {
+        res.render('error', { error: `404 - "Not Found: The ticket with the specified code does not exist.`, user, admin, premium});
+    }
 };

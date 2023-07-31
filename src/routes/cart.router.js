@@ -1,11 +1,12 @@
 import { Router } from "express";
+import { passportCall } from "../util.js";
 import { getCart, createCart, updateProductQuantityToCart, deleteProductFromCart, emptyCart, purchaseCart } from '../controllers/carts.controller.js'
 
 const router = Router();
 
-// Middleware de desarrollo para simular req.user, luego se saca
+/* // Development test middleware to simulate req.user, then output
 const simulateUserMiddleware = (req, res, next) => {
-    // Simular el objeto req.user según tus necesidades
+    // Mock the req.user object according to your needs
     req.user = {
         first_name: 'Jean',
         last_name: 'Pierre',
@@ -16,15 +17,13 @@ const simulateUserMiddleware = (req, res, next) => {
     };
 
     next();
-};
+}; */
 
 router.get('/:cid', getCart);
 router.post('/', createCart);
-router.put('/:cid/products/:pid',simulateUserMiddleware, updateProductQuantityToCart);
-router.delete('/:cid/products/:pid', deleteProductFromCart);
+router.put('/:cid/products/:pid', passportCall('jwt'), updateProductQuantityToCart);
+router.delete('/:cid/products/:pid', passportCall('jwt'), deleteProductFromCart);
 router.delete('/:cid', emptyCart);
-router.get('/:cid/purchase', simulateUserMiddleware, purchaseCart);
-
-// router.put('/:cid/products/:pid', updateProductQuantityToCart);
+router.get('/:cid/purchase', passportCall('jwt'), purchaseCart);
 
 export default router;

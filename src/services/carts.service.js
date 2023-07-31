@@ -77,12 +77,10 @@ export default class CartsService {
         log.logger.info(`User ${user} wants to finalize his purchase`);
 
         if (!cartId) throw new Error('Cart ID is required.');
-
-        const purchaser = user.email;
+        const purchaser = user;
 
         let cart = await CartsRepositoryWithDao.getCart(cartId);
         if (!cart.products.length) throw new Error('Cart is empty')
-
         const notProcessed = []
         let total = 0;
 
@@ -90,24 +88,18 @@ export default class CartsService {
             if (item.quantity <= item.productId.stock) {
                 let updatedStock = item.productId.stock - item.quantity;
                 await productService.updateProduct(item.productId._id, { stock: updatedStock })
-
                 total += item.quantity * item.productId.price;
 
                 await CartsRepositoryWithDao.deleteProduct(cartId, item.productId._id);
-
             } else {
-
                 notProcessed.push(item.productId._id)
             };
         }
-
         if (total == 0) {
             const result = {Error: "Products out of stock returned:", productsReturned: notProcessed}
             return result;
         }
-
-        let ticket = ticketService.createTicket({ total, purchaser });
-
+        let ticket = await ticketService.createTicket({ total, purchaser });
         return { ticket, notProcessed };
     }
 

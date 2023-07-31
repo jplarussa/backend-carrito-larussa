@@ -10,26 +10,65 @@
         <div class="col-md-10">
             <h3 class="text-center py-5 text-primary">Cart Id: {{cartId}}</h3>
             {{#if products.length}}
-                {{#each products}}
-                    <div class="col-md-9 mb-4">
-                        <div class="d-flex">
-                            <div class="col-md-4">
-                                <img src="{{this.productId.thumbnail}}" class="img-thumbnail" alt="{{this.productId.title}}">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="mx-4">
-                                    <h5 class="card-title">{{this.productId.title}}</h5>
-                                    <p class="card-text">{{this.productId.description}}</p>
-                                    <p class="card-text">Price: ${{this.productId.price}}</p>
-                                    <p class="card-text">Quantity: {{this.quantity}}</p>
-                                </div>
-                            </div>
+            {{#each products}}
+            <div class="col-md-9 mb-4">
+                <div class="d-flex">
+                    <div class="col-md-4">
+                        <img src="{{this.productId.thumbnail}}" class="img-thumbnail" alt="{{this.productId.title}}">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="mx-4">
+                            <h5 class="card-title">{{this.productId.title}}</h5>
+                            <p class="card-text">{{this.productId.description}}</p>
+                            <p class="card-text">Price: ${{this.productId.price}}</p>
+                            <p class="card-text">Quantity: {{this.quantity}}</p>
+                            <p class="card-text">Stock: {{this.productId.stock}}</p>
+                            <p class="card-text">Category: {{this.productId.category}}</p>
+                            <p class="card-text">Code: {{this.productId.code}}</p>
                         </div>
                     </div>
-                {{/each}}
+                </div>
+            </div>
+            {{/each}}
+            <div class="m-2">
+                <button type="submit" id="purchaseCart" class="btn btn-primary mb-2" onclick="purchaseCart()">Purchase
+                    Products</button>
+            </div>
             {{else}}
-                <p>No products in the cart</p>
+            <p>No products in the cart</p>
             {{/if}}
         </div>
     </div>
 </div>
+<script>
+    function purchaseCart() {
+        fetch(`/api/carts/{{cartId}}/purchase`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => {
+                if (res.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Purchase completed",
+                        text: "Purchase completed"
+                    });
+                    return res.json();
+                } else {
+                    throw new Error('Failed to purchase cart.');
+                }
+            })
+            .then(data => {
+                console.log(data)
+                const ticketCode = data.ticket._id;
+                window.location.href = `/tickets/${ticketCode}`;
+            })
+            .catch(err => {
+                console.error(err);
+        Swal.fire({
+            icon: "error",
+            text: `Cart purchase cannot be completed.`
+        });
+    });
+}
+</script>

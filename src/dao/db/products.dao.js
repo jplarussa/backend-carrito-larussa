@@ -17,7 +17,6 @@ export default class ProductDao {
     }
     
     async updateProduct(productId, productToReplace) {
-        req.logger.info(`Product to be updated: ${productId}`);
         
         return await productsModel.findByIdAndUpdate(productId, productToReplace, {new: true});
     }

@@ -14,7 +14,7 @@ export default class TicketDao {
     };
 
     async getTicketById(tid) {
-        return await ticketModel.findById(tid);
+        return await ticketModel.findById(tid).lean();
     };
 
 }
