@@ -35,7 +35,8 @@ La aplicación contiene:
 
 
 ## Deployment 
-
+[https://backend-carrito-larussa-production.up.railway.app/](https://backend-carrito-larussa-production.up.railway.app/
+)
 [https://github.com/jplarussa/backend-carrito-larussa](https://github.com/jplarussa/backend-carrito-larussa)
 
 ## Directories
